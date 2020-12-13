@@ -10,6 +10,7 @@ parser.add_argument("d", type=int)
 parser.add_argument("MAX_ITER", type=int)
 parser.add_argument("filename", type=str)
 args = parser.parse_args()
+
 K = args.K
 N = args.N
 d = args.d
@@ -22,7 +23,7 @@ df = pd.DataFrame.to_numpy(df, dtype = np.float_)
 def k_means_pp(df, K, N, d, MAX_ITER):
     np.random.seed(0)
     centroids = np.zeros(K, dtype = int)
-    centroids[0] = np.random.choice(K,1)
+    centroids[0] = np.random.choice(N,1)
     for j in range(1,K):
         probs = get_probs(df,centroids,j)
         centroids[j] = np.random.choice(N, 1, p = probs)
