@@ -120,7 +120,6 @@ static double **approximation_loop(double **observations, double** centroids, in
             newCentroids = temp;
         }
     }
-
     if (newCentroids != centroids) {
         for (i = 0; i < K; i++) {
             free(newCentroids[i]);

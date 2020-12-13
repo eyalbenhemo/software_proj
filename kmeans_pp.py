@@ -18,7 +18,7 @@ MAX_ITER = args.MAX_ITER
 filename = args.filename
 
 df = pd.read_csv(filename, header = None)
-df = pd.DataFrame.to_numpy(df, dtype = np.float_)
+df = pd.DataFrame.to_numpy(df, dtype = np.float64)
 
 def k_means_pp(df, K, N, d, MAX_ITER):
     np.random.seed(0)
