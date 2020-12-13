@@ -1,12 +1,10 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
+#define PY_SSIZE_T_CLEAN
 
-int K, N, d, MAX_ITER;
+#include <Python.h>
 
 /*Get array of pointer to observations and calc their avg*/
-double **
-calc_centroids(double **observations, const int *clusterAllocations, double **new_centroids, int *clustersLengths) {
+static double **
+calc_centroids(double **observations, const int *clusterAllocations, double **new_centroids, int *clustersLengths, int N, int K, int d) {
     int i, j; /* looping variables */
 
     for (i = 0; i < K; i++) { /* initialize clusters lengths and values to 0 */
@@ -37,7 +35,7 @@ calc_centroids(double **observations, const int *clusterAllocations, double **ne
 }
 
 /*Get 2 observations and calc their distance*/
-double euclidian_distance(const double a[], const double b[]) {
+static double euclidian_distance(const double a[], const double b[], int d) {
     double dist = 0;
     int i = 0;
     double temp;
@@ -51,14 +49,14 @@ double euclidian_distance(const double a[], const double b[]) {
 }
 
 /*Get pointer to observation and pointer to array of centroid and return the index of closest centroid*/
-int find_closest_centroid(const double a[], double **centroids) {
+static int find_closest_centroid(const double a[], double **centroids, int K, int d) {
     double min_dist = -1;
     int min_cent = 0;
     int k = 0;
     double distance;
 
     for (; k < K; k++) {
-        distance = euclidian_distance(a, centroids[k]);
+        distance = euclidian_distance(a, centroids[k], d);
         if (distance < min_dist || min_dist == -1) {
             min_dist = distance;
             min_cent = k;
@@ -69,7 +67,7 @@ int find_closest_centroid(const double a[], double **centroids) {
 }
 
 /*Get 2 array of centroids and check if they equal*/
-int check_if_equals(double **new_centroids, double **centroids) {
+static int check_if_equals(double **new_centroids, double **centroids, int K, int d) {
     int i, j = 0;
 
     for (i = 0; i < K; i++) {
@@ -86,9 +84,8 @@ int check_if_equals(double **new_centroids, double **centroids) {
 /*Get centroids, MAX_ITER and observations
  * Calc centroids while num of iter <= MAX_ITER and last(centroids) != centroids
  * return centroids*/
-double **approximation_loop(double **observations) {
+static double **approximation_loop(double **observations, double** centroids, int N, int K, int d, int MAX_ITER) {
     int i, j;
-    double **centroids = observations;
     double **newCentroids = malloc(K * sizeof(double *)); /* new centroids to be returned */
     int *clusterAllocations = malloc(N * sizeof(int)); /* create an array of where every observation in mapped to*/
     int *clustersLengths = calloc(K, sizeof(int)); /*create array of how many observations go to each centroid*/
@@ -102,10 +99,10 @@ double **approximation_loop(double **observations) {
 
     for (j = 0; j < MAX_ITER; j++) {
         for (i = 0; i < N; i++) {
-            clusterAllocations[i] = find_closest_centroid(observations[i], centroids);
+            clusterAllocations[i] = find_closest_centroid(observations[i], centroids, K, d);
         }
-        calc_centroids(observations, clusterAllocations, newCentroids, clustersLengths);
-        if (check_if_equals(centroids, newCentroids)) {
+        calc_centroids(observations, clusterAllocations, newCentroids, clustersLengths, N, K, d);
+        if (check_if_equals(centroids, newCentroids, K, d)) {
             break;
         }
 
@@ -135,48 +132,87 @@ double **approximation_loop(double **observations) {
     return centroids;
 }
 
-int main(int argc, char *argv[]) {
-    char c;
-    int i, j;
-    double **centroids, **observations;
 
-    if (argc != 5) {
-        printf("Need to get 4 args");
-        exit(0);
+static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
+    int K;
+    int N;
+    int d;
+    int MAX_ITER;
+    int i,j;
+    double** observations;
+    double** centroids;
+    double** result;
+
+    PyObject *PYobservations, *K_initial_index, *Pyresult, *Pysublists, *item;
+
+    /*take care for the format of how get params to be like what I except*/
+    if (!PyArg_ParseTuple(args, "iiiiOO", &K, &N, &d, &MAX_ITER, &PYobservations, &K_initial_index)) {
+        return NULL;
     }
 
-    /*Parse arguments*/
-    K = atoi(argv[1]);
-    N = atoi(argv[2]);
-    d = atoi(argv[3]);
-    MAX_ITER = atoi(argv[4]);
-
-    /*Assertions*/
-    if (!(K > 0 && N > 0 && d > 0 && MAX_ITER > 0)) {
-        printf("Args should be positive");
-        exit(0);
-    }
-    if (K >= N) {
-        printf("K need to be smaller than N");
-        exit(0);
+    observations = malloc(N*sizeof(double *));
+    centroids = malloc(K*sizeof(double *));
+    for (i = 0; i < N; i++){ /*Taking the observations from Python to C list*/
+        observations[i] = malloc(d*sizeof(double));
+        item = PyList_GetItem(PYobservations, i);
+        for (j = 0 ; j < d; j++){
+            observations[i][j] = PyFloat_AsDouble(PyList_GetItem(item, j));
+        }
     }
 
-    /*Define variables*/
-    observations = malloc(N * sizeof(double *));
-    assert(observations != NULL && "Allocation failed");
-    for (i = 0; i < N; i++) {
-        observations[i] = malloc(d * sizeof(double));
-        assert(observations[i] != NULL && "Allocation failed");
+    for(i = 0; i < K; i++){ /*Initializing the frist K centroid based on the Python Centroids*/
+        centroids[i] = observations[PyLong_AsLong(PyList_GetItem(K_initial_index,i))];
     }
 
+    result = approximation_loop(observations, centroids, N, K, d, MAX_ITER);
 
-    /*Calc centroids*/
-    centroids = approximation_loop(observations);
-
-    for (i = 0; i < N; i++) {
+    for (i = 0; i < N; i++) { /*Free what is not needed*/
         free(observations[i]);
     }
     free(observations);
+    free(centroids);
 
-    return 0;
+    /*call approximation_loop and return the centroids*/
+    Pyresult = PyList_New(0);
+    for(i = 0; i<K; i++){
+        Pysublists = PyList_New(0);
+        for(j=0;j<d;j++){
+            PyList_Append(Pysublists, PyFloat_FromDouble(result[i][j]));
+        }
+        PyList_Append(Pyresult, Pysublists);
+    }
+
+    for (i = 0; i < K; i++) {
+        free(result[i]);
+    }
+
+    free(result);
+    return Pyresult;
+}
+
+static PyMethodDef capiMethods[] = {
+        {"calc_centroids",                   /* the Python method name that will be used */
+                (PyCFunction) calc_centroids_capi, /* the C-function that implements the Python function and returns static PyObject*  */
+                      METH_VARARGS,           /* flags indicating parametersaccepted for this function */
+                         PyDoc_STR(
+                                 "Kmeans Algorithem get the params and the k_initials and calc the centroids")}, /*  The docstring for the function */
+        {NULL,  NULL, 0, NULL}
+};
+
+static struct PyModuleDef moduledef = {
+        PyModuleDef_HEAD_INIT,
+        "mykmeanssp", /* name of module */
+        NULL, /* Kmeans Algorithem */
+        -1,  /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
+        capiMethods /* the PyMethodDef array from before containing the methods of the extension */
+};
+
+PyMODINIT_FUNC
+PyInit_mykmeanssp(void) {
+    PyObject *m;
+    m = PyModule_Create(&moduledef);
+    if (!m) {
+        return NULL;
+    }
+    return m;
 }
