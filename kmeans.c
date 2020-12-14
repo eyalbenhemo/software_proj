@@ -68,10 +68,10 @@ static int find_closest_centroid(const double a[], double **centroids, int K, in
 
 /*Get 2 array of centroids and check if they equal*/
 static int check_if_equals(double **new_centroids, double **centroids, int K, int d) {
-    int i, j = 0;
+    int i, j;
 
     for (i = 0; i < K; i++) {
-        for (; j <= d; j++) {
+        for (j=0; j < d; j++) {
             if (centroids[i][j] != new_centroids[i][j]) {
                 return 0;
             }
@@ -96,7 +96,6 @@ static double **approximation_loop(double **observations, double** centroids, in
         newCentroids[i] = calloc(d, sizeof(double));
         assert(newCentroids[i] != NULL && "Allocation failed");
     }
-
     for (j = 0; j < MAX_ITER; j++) {
         for (i = 0; i < N; i++) {
             clusterAllocations[i] = find_closest_centroid(observations[i], centroids, K, d);
@@ -105,7 +104,6 @@ static double **approximation_loop(double **observations, double** centroids, in
         if (check_if_equals(centroids, newCentroids, K, d)) {
             break;
         }
-
         if (!j) {
             centroids = newCentroids;
             newCentroids = malloc(K * sizeof(double *));
