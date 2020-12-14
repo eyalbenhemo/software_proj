@@ -7,7 +7,7 @@ add_executable(kmeans kmeans.c)
 
 set(Python3_EXECUTABLE "C:/Users/eyal/AppData/Local/Programs/Python/Python37-32")
 
-find_package (Python3 REQUIRED COMPONENTS Interpreter Development)
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
 include_directories(${Python3_INCLUDE_DIRS})
 

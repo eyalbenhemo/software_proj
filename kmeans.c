@@ -4,7 +4,8 @@
 
 /*Get array of pointer to observations and calc their avg*/
 static double **
-calc_centroids(double **observations, const int *clusterAllocations, double **new_centroids, int *clustersLengths, int N, int K, int d) {
+calc_centroids(double **observations, const int *clusterAllocations, double **new_centroids, int *clustersLengths,
+               int N, int K, int d) {
     int i, j; /* looping variables */
 
     for (i = 0; i < K; i++) { /* initialize clusters lengths and values to 0 */
@@ -71,7 +72,7 @@ static int check_if_equals(double **new_centroids, double **centroids, int K, in
     int i, j;
 
     for (i = 0; i < K; i++) {
-        for (j=0; j < d; j++) {
+        for (j = 0; j < d; j++) {
             if (centroids[i][j] != new_centroids[i][j]) {
                 return 0;
             }
@@ -84,7 +85,7 @@ static int check_if_equals(double **new_centroids, double **centroids, int K, in
 /*Get centroids, MAX_ITER and observations
  * Calc centroids while num of iter <= MAX_ITER and last(centroids) != centroids
  * return centroids*/
-static double **approximation_loop(double **observations, double** centroids, int N, int K, int d, int MAX_ITER) {
+static double **approximation_loop(double **observations, double **centroids, int N, int K, int d, int MAX_ITER) {
     int i, j;
     double **newCentroids = malloc(K * sizeof(double *)); /* new centroids to be returned */
     int *clusterAllocations = malloc(N * sizeof(int)); /* create an array of where every observation in mapped to*/
@@ -135,10 +136,10 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
     int N;
     int d;
     int MAX_ITER;
-    int i,j;
-    double** observations;
-    double** centroids;
-    double** result;
+    int i, j;
+    double **observations;
+    double **centroids;
+    double **result;
 
     PyObject *PYobservations, *K_initial_index, *Pyresult, *Pysublists, *item;
 
@@ -147,18 +148,18 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
         return NULL;
     }
 
-    observations = malloc(N*sizeof(double *));
-    centroids = malloc(K*sizeof(double *));
-    for (i = 0; i < N; i++){ /*Taking the observations from Python to C list*/
-        observations[i] = malloc(d*sizeof(double));
+    observations = malloc(N * sizeof(double *));
+    centroids = malloc(K * sizeof(double *));
+    for (i = 0; i < N; i++) { /*Taking the observations from Python to C list*/
+        observations[i] = malloc(d * sizeof(double));
         item = PyList_GetItem(PYobservations, i);
-        for (j = 0 ; j < d; j++){
+        for (j = 0; j < d; j++) {
             observations[i][j] = PyFloat_AsDouble(PyList_GetItem(item, j));
         }
     }
 
-    for(i = 0; i < K; i++){ /*Initializing the frist K centroid based on the Python Centroids*/
-        centroids[i] = observations[PyLong_AsLong(PyList_GetItem(K_initial_index,i))];
+    for (i = 0; i < K; i++) { /*Initializing the frist K centroid based on the Python Centroids*/
+        centroids[i] = observations[PyLong_AsLong(PyList_GetItem(K_initial_index, i))];
     }
 
     result = approximation_loop(observations, centroids, N, K, d, MAX_ITER);
@@ -171,9 +172,9 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
 
     /*call approximation_loop and return the centroids*/
     Pyresult = PyList_New(0);
-    for(i = 0; i<K; i++){
+    for (i = 0; i < K; i++) {
         Pysublists = PyList_New(0);
-        for(j=0;j<d;j++){
+        for (j = 0; j < d; j++) {
             PyList_Append(Pysublists, PyFloat_FromDouble(result[i][j]));
         }
         PyList_Append(Pyresult, Pysublists);
