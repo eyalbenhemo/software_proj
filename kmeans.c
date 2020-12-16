@@ -6,19 +6,19 @@
 static double **
 calc_centroids(double **observations, const int *clusterAllocations, double **new_centroids, int *clustersLengths,
                int N, int K, int d) {
-    int i, j; /* looping variables */
+    int i, j; /* Looping variables */
 
-    for (i = 0; i < K; i++) { /* initialize clusters lengths and values to 0 */
+    for (i = 0; i < K; i++) { /* Initialize clusters lengths and values to 0 */
         clustersLengths[i] = 0;
         for (j = 0; j < d; j++) {
             new_centroids[i][j] = 0;
         }
     }
 
-    for (i = 0; i < N; i++) { /* add all the values of the of the observations to the relevant centroid */
-        clustersLengths[clusterAllocations[i]]++; /* update number of observations in vector */
+    for (i = 0; i < N; i++) { /* Add all the values of the of the observations to the relevant centroid */
+        clustersLengths[clusterAllocations[i]]++; /* Update number of observations in vector */
         for (j = 0; j < d; j++) {
-            new_centroids[clusterAllocations[i]][j] += observations[i][j]; /* add observation to vector */
+            new_centroids[clusterAllocations[i]][j] += observations[i][j]; /* Add observation to vector */
         }
     }
 
@@ -87,13 +87,13 @@ static int check_if_equals(double **new_centroids, double **centroids, int K, in
  * return centroids*/
 static double **approximation_loop(double **observations, double **centroids, int N, int K, int d, int MAX_ITER) {
     int i, j;
-    double **newCentroids = malloc(K * sizeof(double *)); /* new centroids to be returned */
-    int *clusterAllocations = malloc(N * sizeof(int)); /* create an array of where every observation in mapped to*/
-    int *clustersLengths = calloc(K, sizeof(int)); /*create array of how many observations go to each centroid*/
-    double **temp; /*swap variable*/
+    double **newCentroids = malloc(K * sizeof(double *)); /* New centroids to be returned */
+    int *clusterAllocations = malloc(N * sizeof(int)); /* Create an array of where every observation in mapped to*/
+    int *clustersLengths = calloc(K, sizeof(int)); /*Create array of how many observations go to each centroid*/
+    double **temp; /*Swap variable*/
     assert(newCentroids != NULL && clusterAllocations != NULL && clustersLengths != NULL && "Allocation failed");
 
-    for (i = 0; i < K; i++) { /* initialize clusters lengths and values to 0 */
+    for (i = 0; i < K; i++) { /* Initialize clusters lengths and values to 0 */
         newCentroids[i] = calloc(d, sizeof(double));
         assert(newCentroids[i] != NULL && "Allocation failed");
     }
@@ -130,21 +130,16 @@ static double **approximation_loop(double **observations, double **centroids, in
     return centroids;
 }
 
-
+/*C-API function: Parse the arguments from python,
+ * Call the C function to execute Kmeans Algorithem
+ * */
 static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
-    int K;
-    int N;
-    int d;
-    int MAX_ITER;
-    int i, j;
-    double **observations;
-    double **centroids;
-    double **result;
+    int K, N, d, MAX_ITER, i, j;
+    double **observations, **centroids, **result;
+    PyObject *Pyobservations, *K_initial_index, *Pyresult, *Pysublists, *item;
 
-    PyObject *PYobservations, *K_initial_index, *Pyresult, *Pysublists, *item;
-
-    /*take care for the format of how get params to be like what I except*/
-    if (!PyArg_ParseTuple(args, "iiiiOO", &K, &N, &d, &MAX_ITER, &PYobservations, &K_initial_index)) {
+    /*Take care for the format of how get params to be like excepted*/
+    if (!PyArg_ParseTuple(args, "iiiiOO", &K, &N, &d, &MAX_ITER, &Pyobservations, &K_initial_index)) {
         return NULL;
     }
 
@@ -152,7 +147,7 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
     centroids = malloc(K * sizeof(double *));
     for (i = 0; i < N; i++) { /*Taking the observations from Python to C list*/
         observations[i] = malloc(d * sizeof(double));
-        item = PyList_GetItem(PYobservations, i);
+        item = PyList_GetItem(Pyobservations, i);
         for (j = 0; j < d; j++) {
             observations[i][j] = PyFloat_AsDouble(PyList_GetItem(item, j));
         }
@@ -162,15 +157,10 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
         centroids[i] = observations[PyLong_AsLong(PyList_GetItem(K_initial_index, i))];
     }
 
+    /*Call approximation_loop and return the centroids*/
     result = approximation_loop(observations, centroids, N, K, d, MAX_ITER);
 
-    for (i = 0; i < N; i++) { /*Free what is not needed*/
-        free(observations[i]);
-    }
-    free(observations);
-    free(centroids);
-
-    /*call approximation_loop and return the centroids*/
+    /*Create python list of centroids*/
     Pyresult = PyList_New(0);
     for (i = 0; i < K; i++) {
         Pysublists = PyList_New(0);
@@ -180,14 +170,21 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
         PyList_Append(Pyresult, Pysublists);
     }
 
+    /*Free allocation in C*/
+    for (i = 0; i < N; i++) {
+        free(observations[i]);
+    }
+    free(observations);
+    free(centroids);
     for (i = 0; i < K; i++) {
         free(result[i]);
     }
-
     free(result);
+
     return Pyresult;
 }
 
+/*The C-API function that will be available to the API*/
 static PyMethodDef capiMethods[] = {
         {"calc_centroids",                   /* the Python method name that will be used */
                 (PyCFunction) calc_centroids_capi, /* the C-function that implements the Python function and returns static PyObject*  */
@@ -197,6 +194,7 @@ static PyMethodDef capiMethods[] = {
         {NULL,  NULL, 0, NULL}
 };
 
+/*The C-API module*/
 static struct PyModuleDef moduledef = {
         PyModuleDef_HEAD_INIT,
         "mykmeanssp", /* name of module */

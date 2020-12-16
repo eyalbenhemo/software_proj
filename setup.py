@@ -21,12 +21,10 @@ from setuptools import setup, find_packages, Extension
     at docs.python.org for more information.
 """
 
-# setup() parameters - https://packaging.python.org/guides/distributing-packages-using-setuptools/
 setup(
     name='mykmeanssp',
     version='0.1.0',
     author="Shahar Ziv And Eyal Ben-Hemo",
-    author_email="",
     description="A kmeans Algorithem C-API",
     install_requires=['invoke'],
     packages=find_packages(),  # find_packages(where='.', exclude=())
@@ -35,7 +33,7 @@ setup(
             # the qualified name of the extension module to build
             'mykmeanssp',
             # the files to compile into our module relative to ``setup.py``
-            sources = ['kmeans.c'],
+            sources=['kmeans.c'],
         ),
     ]
 )
