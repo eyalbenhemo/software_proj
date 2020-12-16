@@ -42,7 +42,8 @@ def k_means_pp():
     print(",".join([str(centroid) for centroid in centroids]))
     res = msp.calc_centroids(K, N, d, MAX_ITER, np.ndarray.tolist(df), centroids)
     for i in range(K):
-        print(",".join([str(centroid) for centroid in res[i]]))
+        temp = ["{:.16f}".format(np.float64(c)) for c in res[i]]
+        print(*temp, sep=",")
 
 #Calc the prob for every observition by it's distance from the closest centroid
 def get_probs(centroids, j):
