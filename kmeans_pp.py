@@ -62,5 +62,6 @@ def get_probs(centroids, j, distances):
             index += 1
     return distances / np.sum(distances)
 
+
 # The Execution of the Algorithem
 k_means_pp()
