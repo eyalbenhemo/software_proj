@@ -52,11 +52,11 @@ def get_probs(centroids, j, distances):
     index = 0
     if j == 1:
         for row in df:
-            distances[index] = np.linalg.norm(row - centroids[j]) ** 2
+            distances[index] = np.linalg.norm(row - df[centroids[j - 1]]) ** 2
             index += 1
     else:
         for row in df:
-            candidate = np.linalg.norm(row - centroids[j]) ** 2
+            candidate = np.linalg.norm(row - df[centroids[j - 1]]) ** 2
             if candidate < distances[index]:
                 distances[index] = candidate
             index += 1
