@@ -7,7 +7,6 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("K", type=int)
 parser.add_argument("N", type=int)
-parser.add_argument("d", type=int)
 parser.add_argument("MAX_ITER", type=int)
 parser.add_argument("filename", type=str)
 args, unknown_args = parser.parse_known_args()
