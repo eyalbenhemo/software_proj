@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 import data_parser as data
 import math
 
@@ -7,19 +6,18 @@ import math
 def norm_spect_clustering():
     df = data.df
     N = data.N
-    x = np.array([
-        [3, 4, 2],
-        [1, 6, 2],
-        [21, 0, -2]
-    ], dtype=float)
-    N =3
-    W = weighted_adjacency(N, x)
-    # np.set_printoptions(precision=1)
-    print(W)
+    # start = time.time()
+    W = weighted_adjacency(N, df)
+    # print(time.time() - start)
+    np.set_printoptions(precision=1)
+    # print(W)
+    # start = time.time()
     D = diagonal_mat_minus_sqrt(N, W)
-    print(2)
     L = norm_laplacian(N, W, D)
-    print(3)
+    print(L)
+    # print("2 " + time.time() - start)
+    U = eigengap_heuristic(L)
+    return matrix_T_normalize(U)
 
 
 # step 1
@@ -40,3 +38,14 @@ def diagonal_mat_minus_sqrt(N, W):
 
 def norm_laplacian(N, W, D):
     return np.identity(N) - np.dot(np.dot(D, W), D)
+
+
+# step 3 and 4
+def eigengap_heuristic(L):
+    return
+
+
+# step 5
+def matrix_T_normalize(U):
+    normalization_vec = np.array(np.linalg.norm(x) for x in U)
+    return U / normalization_vec[:, np.newaxis]
