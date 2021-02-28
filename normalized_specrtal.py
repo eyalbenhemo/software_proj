@@ -7,9 +7,15 @@ import math
 def norm_spect_clustering():
     df = data.df
     N = data.N
-    W = weighted_adjacency(N, df)
+    x = np.array([
+        [3, 4, 2],
+        [1, 6, 2],
+        [21, 0, -2]
+    ], dtype=float)
+    N =3
+    W = weighted_adjacency(N, x)
     # np.set_printoptions(precision=1)
-    print(1)
+    print(W)
     D = diagonal_mat_minus_sqrt(N, W)
     print(2)
     L = norm_laplacian(N, W, D)
@@ -24,7 +30,7 @@ def weighted_adjacency(N, df):
 
 
 def weight_foo(x_i, x_j):
-    return math.exp(-0.5 * (np.linalg.norm(x_i - x_j) ** 2))
+    return math.exp(-0.5 * (np.linalg.norm(x_i - x_j)))
 
 
 # step 2
