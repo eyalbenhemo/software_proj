@@ -1,5 +1,6 @@
 import numpy as np
 import data_parser as data
+import eigengap_heuristic as eh
 import math
 
 
@@ -42,7 +43,13 @@ def norm_laplacian(N, W, D):
 
 # step 3 and 4
 def eigengap_heuristic(L):
-    return
+    eigens = eh.QR_iter(L)
+    k = eh.set_k(eigens["Abar"])
+    ind = np.argsort(np.diag(eigens["Abar"]))[0:k]
+    U = eigens["Qbar"][:, ind]
+    return U
+
+
 
 
 # step 5

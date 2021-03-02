@@ -26,7 +26,7 @@ setup(
     version='0.1.0',
     author="Shahar Ziv And Eyal Ben-Hemo",
     description="A kmeans Algorithem C-API",
-    install_requires=['invoke'],
+    install_requires=['invoke', 'numpy'],
     packages=find_packages(),  # find_packages(where='.', exclude=())
     ext_modules=[
         Extension(
