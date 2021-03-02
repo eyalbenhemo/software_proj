@@ -39,7 +39,7 @@ def set_k(A: np.array):
     for i in range(n//2):
         candidate = abs(eigenvalues[i] - eigenvalues[i+1])
         if candidate > k:
-            k = candidate
+            k = i
     return int(round(k))
 
 
