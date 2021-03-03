@@ -40,7 +40,7 @@ def set_k(A: np.array):
         candidate = abs(eigenvalues[i] - eigenvalues[i+1])
         if candidate > k:
             k = i
-    return int(round(k))
+    return k
 
 
 

@@ -3,7 +3,7 @@ project(kmeans C)
 
 set(CMAKE_C_STANDARD 90)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ansi -Wall -Wextra -Werror -pedantic-errors")
-add_executable(kmeans kmeans.c)
+add_executable(kmeans kmeans.c eigengap_heuristic.c)
 
 set(Python3_EXECUTABLE "C:/Users/eyal/AppData/Local/Programs/Python/Python37-32")
 
