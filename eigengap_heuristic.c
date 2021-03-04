@@ -1,9 +1,12 @@
+#define PY_SSIZE_T_CLEAN
+
+#include <Python.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "linalg.h"
 #include <math.h>
 
-double*** gram_schmidt(double** A, int n){
+static double*** gram_schmidt(double** A, int n){
     int i, j;
     double*** result = malloc(2 * sizeof(double**));
     double** U = matcopy(A, n);
@@ -23,7 +26,7 @@ double*** gram_schmidt(double** A, int n){
     return result;
 }
 
-double*** QR_iter(dobule** A, int n){
+static double*** QR_iter_exe(dobule** A, int n){
     int i;
     double dif;
     double** tempQ;
@@ -54,7 +57,7 @@ double*** QR_iter(dobule** A, int n){
 }
 
 
-int set_k(double** A, int n){
+static int set_k_exe(double** A, int n){
     int i, k = 0;
     double candidate;
     double* eigenvalues = diag(A, n);
@@ -63,4 +66,11 @@ int set_k(double** A, int n){
         if(candidate > k) k = i;
     }
     return k;
+}
+
+static PyObject* QR_iter(PyObject* self, PyObject* args){
+    int n;
+    PyObject* PyA;
+    double** A;
+    if(!PyArg_ParseTuple(args, "Oi", &PyA, &n)) return NULL;
 }
