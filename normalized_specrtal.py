@@ -7,18 +7,12 @@ import math
 def norm_spect_clustering():
     df = data.df
     N = data.N
-    # start = time.time()
     W = weighted_adjacency(N, df)
-    # print(time.time() - start)
     np.set_printoptions(precision=1)
-    # print(W)
-    # start = time.time()
     D = diagonal_mat_minus_sqrt(N, W)
     L = norm_laplacian(N, W, D)
-    print(L)
-    # print("2 " + time.time() - start)
-    U = eigengap_heuristic(L)
-    return matrix_T_normalize(U)
+    U, K = eigengap_heuristic(L)
+    return matrix_T_normalize(U), K
 
 
 # step 1
@@ -44,15 +38,13 @@ def norm_laplacian(N, W, D):
 # step 3 and 4
 def eigengap_heuristic(L):
     eigens = eh.QR_iter(L)
-    k = eh.set_k(eigens["Abar"])
-    ind = np.argsort(np.diag(eigens["Abar"]))[0:k]
+    K = eh.set_k(eigens["Abar"])
+    ind = np.argsort(np.diag(eigens["Abar"]))[0:K]
     U = eigens["Qbar"][:, ind]
-    return U
-
-
+    return U, K
 
 
 # step 5
 def matrix_T_normalize(U):
-    normalization_vec = np.array(np.linalg.norm(x) for x in U)
+    normalization_vec = np.array([np.linalg.norm(x) for x in U])
     return U / normalization_vec[:, np.newaxis]

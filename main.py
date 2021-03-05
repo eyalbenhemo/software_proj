@@ -7,14 +7,14 @@ data.read_data()
 
 # Normalized Spectral Clustering Algorithm
 # steps 1-5
-T = norm_spect_clustering()
+T, K = norm_spect_clustering()
 
 # Calling the k-mean algorithm
 # step 6
-centroids, res = kmeans(T)
+centroids, res = kmeans(T, K)
 
 # Printing
 # step 7
 print(",".join([str(centroid) for centroid in centroids]))
-for i in range(data.K):
+for i in range(K):
     print(",".join([str(centroid) for centroid in res[i]]))
