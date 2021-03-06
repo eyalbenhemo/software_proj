@@ -2,7 +2,8 @@ import argparse
 from numpy.random import randint as random
 from sklearn.datasets import make_blobs
 
-N2, K2, N3, K3 = 1, 1, 1, 1
+max_cap = {2: {'N': 20, 'K': 10},
+           3: {'N': 16, 'K': 8}}
 
 K = None
 N = None
@@ -14,7 +15,7 @@ RANDOM = None
 
 def read_data():
     global K, N, d, MAX_ITER, data, RANDOM
-    d = 2 + random(2)
+    d = random(low=2, high=4)
     parser = argparse.ArgumentParser()
     temp, args = parser.parse_known_args()
 
@@ -35,5 +36,7 @@ def read_data():
     if not (RANDOM == "True" or RANDOM == "False"):
         exit("RANDOM has to be boolean")
     RANDOM = (RANDOM == "True")
-    print("K=" + str(K) + ", N=" + str(N) + ", d=" + str(d))
+    if RANDOM:
+        N = random(low=max_cap[d]['N'] / 2, high=max_cap[d]['N'])
+        K = random(low=max_cap[d]['K'] / 2, high=max_cap[d]['K'])
     data = make_blobs(n_samples=N, n_features=d, centers=K)[0]
