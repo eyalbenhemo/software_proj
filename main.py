@@ -30,7 +30,7 @@ T, K = norm_spect_clustering()
 
 # Calling the k-mean algorithm
 # step 6
-centroids, centroids_new, locations = kmeans(T, K)
+centroids, centroids_new, locations = kmeans(T, K, data.N, K, data.MAX_ITER)
 
 # Printing
 # step 7

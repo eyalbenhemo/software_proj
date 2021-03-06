@@ -190,6 +190,7 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
         free(result[i]);
     }
     free(result);
+    free(clusterAllocations);
 
     return Py_BuildValue("OO", PyCentroids, PyLocations);
 }

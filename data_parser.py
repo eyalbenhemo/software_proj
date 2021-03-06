@@ -12,20 +12,30 @@ df = None
 def read_data():
     global K, N, d, MAX_ITER, df
     parser = argparse.ArgumentParser()
-    parser.add_argument("K", type=int)
-    parser.add_argument("N", type=int)
-    parser.add_argument("d", type=int)
-    parser.add_argument("filename", type=str)
-    args, unknown_args = parser.parse_known_args()
-    K = args.K
-    N = args.N
-    d = args.d
-    filename = args.filename
+    # parser.add_argument("K")
+    # parser.add_argument("N")
+    # parser.add_argument("d")
+    # parser.add_argument("filename")
+    temp, args = parser.parse_known_args()
 
-    # Assertions
-    assert len(unknown_args) == 0, "4 arguments needed"
-    assert (K is not None and N is not None and d is not None and filename is not None), "4 arguments needed"
-    assert K > 0 and N > 0 and d > 0, "K, N, d Have to be positive"
-    assert K < N, "K must be less than N"
+    # Code validation
+    if len(args) != 4:
+        exit("4 arguments required")
+    K = args[0]
+    N = args[1]
+    d = args[2]
+    filename = args[3]
+    if not (K.isnumeric() and int(K) > 0):
+        exit("K has to be positive number")
+    if not (N.isnumeric() and int(N) > 0):
+        exit("N has to be positive number")
+    if not (d.isnumeric() and int(d) > 0):
+        exit("d has to be positive number")
+    K = int(K)
+    N = int(N)
+    d = int(d)
+    if K >= N:
+        exit("K must be smaller than N")
+
     # Init data frame with the input file
     df = pd.DataFrame.to_numpy(pd.read_csv(filename, header=None), dtype=np.float64)

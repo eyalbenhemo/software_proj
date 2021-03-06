@@ -1,23 +1,22 @@
 import mykmeanssp as msp
 import numpy as np
-import data_parser as data
 
 
 # Call using C-API to Kmeans Algorithm from HW1
-def k_means_pp(mat, K):
+def k_means_pp(mat, K, N, d, MAX_ITER):
     np.random.seed(0)
     centroids = np.zeros(K, dtype=int)
-    centroids[0] = np.random.choice(data.N, 1)
+    centroids[0] = np.random.choice(N, 1)
     centroids_values = np.empty([K, K])
     centroids_values[0] = mat[centroids[0]].copy()
-    min_dist = np.full(data.N, fill_value=float('inf'))
+    min_dist = np.full(N, fill_value=float('inf'))
     for j in range(1, K):
         p = get_probs(mat, centroids_values, j, min_dist)
-        centroids[j] = np.random.choice(data.N, 1, p=p[0])
+        centroids[j] = np.random.choice(N, 1, p=p[0])
         centroids_values[j] = mat[centroids[j]].copy()
         min_dist = p[1]
     centroids = np.ndarray.tolist(centroids)
-    centroids_new, locations = msp.calc_centroids(K, data.N, K, data.MAX_ITER, np.ndarray.tolist(mat), centroids)
+    centroids_new, locations = msp.calc_centroids(K, N, d, MAX_ITER, np.ndarray.tolist(mat), centroids)
     return centroids, centroids_new, locations
 
 
