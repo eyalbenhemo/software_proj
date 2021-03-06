@@ -5,9 +5,9 @@ import math
 
 
 def norm_spect_clustering():
-    df = data.df
+    mat = data.data
     N = data.N
-    W = weighted_adjacency(N, df)
+    W = weighted_adjacency(N, mat)
     D = diagonal_mat_minus_sqrt(N, W)
     L = norm_laplacian(N, W, D)
     U, K = eigengap_heuristic(L)
@@ -15,11 +15,11 @@ def norm_spect_clustering():
 
 
 # step 1
-def weighted_adjacency(N, df):
+def weighted_adjacency(N, mat):
     W = np.zeros((N, N))
     for i in range(N-1):
         for j in range(i + 1, N):
-            W[i][j] = math.exp(-0.5 * (np.linalg.norm(df[i] - df[j])))
+            W[i][j] = math.exp(-0.5 * (np.linalg.norm(mat[i] - mat[j])))
     W = np.transpose(W) + W
     return W
 

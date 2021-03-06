@@ -1,41 +1,36 @@
 import argparse
-import pandas as pd
-import numpy as np
+from numpy.random import randint as random
+from sklearn.datasets import make_blobs
 
 K = None
 N = None
 d = None
 MAX_ITER = 300
-df = None
-
+data = None
+RANDOM = None
 
 def read_data():
-    global K, N, d, MAX_ITER, df
+    global K, N, d, MAX_ITER, data, RANDOM
+    d = 2 + random(2)
     parser = argparse.ArgumentParser()
-    # parser.add_argument("K")
-    # parser.add_argument("N")
-    # parser.add_argument("d")
-    # parser.add_argument("filename")
     temp, args = parser.parse_known_args()
 
     # Code validation
-    if len(args) != 4:
-        exit("4 arguments required")
+    if len(args) != 3:
+        exit("3 arguments required")
     K = args[0]
     N = args[1]
-    d = args[2]
-    filename = args[3]
+    RANDOM = args[2]
     if not (K.isnumeric() and int(K) > 0):
         exit("K has to be positive number")
     if not (N.isnumeric() and int(N) > 0):
         exit("N has to be positive number")
-    if not (d.isnumeric() and int(d) > 0):
-        exit("d has to be positive number")
     K = int(K)
     N = int(N)
-    d = int(d)
     if K >= N:
         exit("K must be smaller than N")
+    if not (RANDOM == "True" or RANDOM == "False"):
+        exit("RANDOM has to be boolean")
+    RANDOM = (RANDOM == "True")
+    data = make_blobs(n_samples=N, n_features=d, centers=K)[0]
 
-    # Init data frame with the input file
-    df = pd.DataFrame.to_numpy(pd.read_csv(filename, header=None), dtype=np.float64)
