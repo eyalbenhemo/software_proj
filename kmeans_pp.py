@@ -7,11 +7,13 @@ def k_means_pp(mat, K, N, d, MAX_ITER):
     np.random.seed(0)
     centroids = np.zeros(K, dtype=int)
     centroids[0] = np.random.choice(N, 1)
-    centroids_values = np.empty([K, K])
+    centroids_values = np.empty([K, d])
     centroids_values[0] = mat[centroids[0]].copy()
     min_dist = np.full(N, fill_value=float('inf'))
     for j in range(1, K):
         p = get_probs(mat, centroids_values, j, min_dist)
+        if np.isnan(p[0]).any():
+            print("!")
         centroids[j] = np.random.choice(N, 1, p=p[0])
         centroids_values[j] = mat[centroids[j]].copy()
         min_dist = p[1]

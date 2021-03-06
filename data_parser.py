@@ -10,7 +10,7 @@ N = None
 d = None
 MAX_ITER = 300
 data = None
-RANDOM = None
+RANDOM = True
 
 
 def read_data():
@@ -35,7 +35,7 @@ def read_data():
         exit("K must be smaller than N")
     if not (RANDOM == "True" or RANDOM == "False"):
         exit("RANDOM has to be boolean")
-    RANDOM = (RANDOM == "True")
+    RANDOM = (RANDOM != "False")
     if RANDOM:
         N = random(low=max_cap[d]['N'] / 2, high=max_cap[d]['N'])
         K = random(low=max_cap[d]['K'] / 2, high=max_cap[d]['K'])
