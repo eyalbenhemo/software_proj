@@ -1,4 +1,4 @@
-/input*.txt
+/inputs/
 /build/
 /venv/
 /mykmeanssp.cp37-win32.pyd

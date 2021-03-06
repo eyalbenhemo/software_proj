@@ -8,7 +8,6 @@ def norm_spect_clustering():
     df = data.df
     N = data.N
     W = weighted_adjacency(N, df)
-    np.set_printoptions(precision=1)
     D = diagonal_mat_minus_sqrt(N, W)
     L = norm_laplacian(N, W, D)
     U, K = eigengap_heuristic(L)
@@ -17,13 +16,12 @@ def norm_spect_clustering():
 
 # step 1
 def weighted_adjacency(N, df):
-    mat = np.array([weight_foo(x_i, x_j) for x_i in df for x_j in df], dtype=np.float64)
-    mat.shape = (N, N)
-    return mat - np.identity(N)
-
-
-def weight_foo(x_i, x_j):
-    return math.exp(-0.5 * (np.linalg.norm(x_i - x_j)))
+    W = np.zeros((N, N))
+    for i in range(N-1):
+        for j in range(i + 1, N):
+            W[i][j] = math.exp(-0.5 * (np.linalg.norm(df[i] - df[j])))
+    W = np.transpose(W) + W
+    return W
 
 
 # step 2
@@ -32,13 +30,13 @@ def diagonal_mat_minus_sqrt(N, W):
 
 
 def norm_laplacian(N, W, D):
-    return np.identity(N) - np.dot(np.dot(D, W), D)
+    return np.identity(N) - D @ W @ D
 
 
 # step 3 and 4
 def eigengap_heuristic(L):
     eigens = eh.QR_iter(L)
-    K = eh.set_k(eigens["Abar"])
+    K = eh.set_k(np.diag(eigens["Abar"]))
     ind = np.argsort(np.diag(eigens["Abar"]))[0:K]
     U = eigens["Qbar"][:, ind]
     return U, K
