@@ -2,12 +2,15 @@ import argparse
 from numpy.random import randint as random
 from sklearn.datasets import make_blobs
 
+N2, K2, N3, K3 = 1, 1, 1, 1
+
 K = None
 N = None
 d = None
 MAX_ITER = 300
 data = None
 RANDOM = None
+
 
 def read_data():
     global K, N, d, MAX_ITER, data, RANDOM
@@ -32,5 +35,5 @@ def read_data():
     if not (RANDOM == "True" or RANDOM == "False"):
         exit("RANDOM has to be boolean")
     RANDOM = (RANDOM == "True")
+    print("K=" + str(K) + ", N=" + str(N) + ", d=" + str(d))
     data = make_blobs(n_samples=N, n_features=d, centers=K)[0]
-
