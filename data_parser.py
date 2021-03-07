@@ -1,4 +1,5 @@
 import argparse
+import pandas as pd
 from numpy.random import randint as random
 from sklearn.datasets import make_blobs
 
@@ -34,9 +35,16 @@ def read_data():
     if K >= N:
         exit("K must be smaller than N")
     if not (RANDOM == "True" or RANDOM == "False"):
-        exit("RANDOM has to be boolean")
+        exit("RANDOM has to be either True or False")
     RANDOM = (RANDOM != "False")
     if RANDOM:
         N = random(low=max_cap[d]['N'] / 2, high=max_cap[d]['N'])
         K = random(low=max_cap[d]['K'] / 2, high=max_cap[d]['K'])
-    data = make_blobs(n_samples=N, n_features=d, centers=K)[0]
+    sample = make_blobs(n_samples=N, n_features=d, centers=K)
+    data = sample[0]
+
+    #generate data.txt
+    print(sample)
+    data_out = pd.DataFrame(sample[0])
+    data_out['new'] = sample[1]
+    data_out.to_csv('data.txt', index=False, header=False)

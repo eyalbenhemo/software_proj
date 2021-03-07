@@ -19,6 +19,7 @@ def print_results(centroids, clusters, locations):
 # Init data and params
 data.read_data()
 
+
 # Informative message
 print("The maximum capacity for 2-dimensional points is: N=" + str(data.max_cap[2]['N']) + " and K=" + str(
     data.max_cap[2]['K']))
@@ -50,3 +51,6 @@ print("---------Kmeans---------")
 print("------------------------")
 print_results(kmeans_centroids, kmeans_clusters, kmeans_locations)
 print("------------------------")
+
+#exporting cluster.txt
+
