@@ -40,4 +40,4 @@ def set_k(eigenvalues: np.array):
         if candidate > lambda_k:
             k = i
             lambda_k = candidate
-    return k+1
+    return k + 1

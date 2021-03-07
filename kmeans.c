@@ -3,8 +3,8 @@
 #include <Python.h>
 
 /*check if the pointer we got after malloc/calloc isn't NULL*/
-static void checkAllocation(void* pointer){
-    if(pointer == NULL){
+static void checkAllocation(void *pointer) {
+    if (pointer == NULL) {
         printf("Allocation failed");
         exit(1);
     }

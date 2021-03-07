@@ -17,7 +17,7 @@ def norm_spect_clustering():
 # step 1
 def weighted_adjacency(N, mat):
     W = np.zeros((N, N))
-    for i in range(N-1):
+    for i in range(N - 1):
         for j in range(i + 1, N):
             W[i][j] = math.exp(-0.5 * (np.linalg.norm(mat[i] - mat[j])))
     W = np.transpose(W) + W

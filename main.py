@@ -32,9 +32,6 @@ K = d_spect
 if not data.RANDOM:
     K = data.K
 
-if d_spect <= 1:
-    print("1")
-
 # Calling the k-mean algorithm
 # step 6
 spec_centroids, spec_clusters, spec_locations = kmeans(T, K, data.N, d_spect, data.MAX_ITER)
