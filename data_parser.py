@@ -3,8 +3,8 @@ import pandas as pd
 from numpy.random import randint as random
 from sklearn.datasets import make_blobs
 
-max_cap = {2: {'N': 20, 'K': 10},
-           3: {'N': 16, 'K': 8}}
+max_cap = {2: {'N': 200, 'K': 10},
+           3: {'N': 100, 'K': 8}}
 
 K = None
 N = None
@@ -48,3 +48,4 @@ def read_data():
     data_out = pd.DataFrame(sample[0])
     data_out['new'] = sample[1]
     data_out.to_csv('data.txt', index=False, header=False)
+

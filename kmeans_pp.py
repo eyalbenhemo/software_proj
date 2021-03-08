@@ -12,12 +12,14 @@ def k_means_pp(mat, K, N, d, MAX_ITER):
     min_dist = np.full(N, fill_value=float('inf'))
     for j in range(1, K):
         p = get_probs(mat, centroids_values, j, min_dist)
+        if np.isnan(p[0]).any():
+            exit("Probabilities vector failure - all observations distances are 0 from a some centroid")
         centroids[j] = np.random.choice(N, 1, p=p[0])
         centroids_values[j] = mat[centroids[j]].copy()
         min_dist = p[1]
     centroids = np.ndarray.tolist(centroids)
-    centroids_new, locations = msp.calc_centroids(K, N, d, MAX_ITER, np.ndarray.tolist(mat), centroids)
-    return centroids, centroids_new, locations
+    locations = msp.calc_centroids(K, N, d, MAX_ITER, np.ndarray.tolist(mat), centroids)
+    return locations
 
 
 # Calc the prob for every observation by it's distance from the closest centroid

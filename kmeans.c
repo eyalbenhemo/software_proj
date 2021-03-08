@@ -173,16 +173,6 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
     /*Call approximation_loop and return the centroids*/
     result = approximation_loop(observations, centroids, &clusterAllocations, N, K, d, MAX_ITER);
 
-    /*Create python list of centroids*/
-    PyCentroids = PyList_New(0);
-    for (i = 0; i < K; i++) {
-        Pysublists = PyList_New(0);
-        for (j = 0; j < d; j++) {
-            PyList_Append(Pysublists, PyFloat_FromDouble(result[i][j]));
-        }
-        PyList_Append(PyCentroids, Pysublists);
-    }
-
     /*Create python list of locations*/
     PyLocations = PyList_New(0);
     for (i = 0; i < N; i++) {
@@ -201,7 +191,7 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
     }
     free(result);
 
-    return Py_BuildValue("OO", PyCentroids, PyLocations);
+    return Py_BuildValue("O", PyLocations);
 }
 
 /*The C-API function that will be available to the API*/

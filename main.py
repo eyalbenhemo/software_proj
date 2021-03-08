@@ -1,19 +1,14 @@
 import data_parser as data
 from normalized_specrtal import norm_spect_clustering
 from kmeans_pp import k_means_pp as kmeans
+import pandas as pd
+from create_visualization import create_visualization_file
 
-
-def print_results(centroids, clusters, locations):
-    print("centroids init locations")
-    print(",".join([str(centroid) for centroid in centroids]))
-    print("------------------------")
-    print("centroids after kmeans:")
+def write_clusters(locations, f, K):
+    clusters = pd.DataFrame(locations).groupby([0]).indices
     for i in range(K):
-        print(",".join([str(centroid) for centroid in clusters[i]]))
-    print("------------------------")
-    print("observations:")
-    for i in range(data.N):
-        print("The " + str(i + 1) + "st obs is clustered to the " + str(locations[i] + 1) + " centroid")
+        f.write('\n')
+        f.write(','.join(map(str, clusters[i])))
 
 
 # Init data and params
@@ -35,22 +30,18 @@ if not data.RANDOM:
 
 # Calling the k-mean algorithm
 # step 6
-spec_centroids, spec_clusters, spec_locations = kmeans(T, K, data.N, d_spect, data.MAX_ITER)
-
+spec_locations = kmeans(T, K, data.N, d_spect, data.MAX_ITER)
+print(spec_locations, "\n------------------------------------")
 # Execution of Kmeans++ HW2
-kmeans_centroids, kmeans_clusters, kmeans_locations = kmeans(data.data, K, data.N, data.d, data.MAX_ITER)
+kmeans_locations = kmeans(data.data, K, data.N, data.d, data.MAX_ITER)
+print(kmeans_locations)
 
-# Printing
-# step 7
-print("------------------------")
-print("---norm spect cluster---")
-print("------------------------")
-print_results(spec_centroids, spec_clusters, spec_locations)
-print("------------------------")
-print("---------Kmeans---------")
-print("------------------------")
-print_results(kmeans_centroids, kmeans_clusters, kmeans_locations)
-print("------------------------")
+#Generate clusters.txt
+f = open("clusters.txt", 'w')
+f.write(str(K))
+write_clusters(spec_locations, f, K)
+write_clusters(kmeans_locations, f, K)
+f.close()
 
-#exporting cluster.txt
-
+#Generate clusters.pdf
+create_visualization_file(data, spec_locations, kmeans_locations)
