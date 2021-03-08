@@ -6,18 +6,19 @@ def generate_info(data):
           "n = {} , k = {}\n" \
           "The k that was used for both algorithms was {}\n" \
           "The Jaccard measure for Spectral Clustering: {}\n" \
-          "The Jaccard measure for K-means: {}".format("n","k","a","b","c")
+          "The Jaccard measure for K-means: {}".format("n", "k", "a", "b", "c")
     return res
+
 
 def create_2d(data, spec_locations, kmeans_locations):
     fig, (spectral, kmeans) = plt.subplots(1, 2)
     cmap = plt.cm.jet
-    x = data.data[:,0]
-    y = data.data[:,1]
+    x = data.data[:, 0]
+    y = data.data[:, 1]
     spectral.set_title('Normalized spectral clustering')
     kmeans.set_title('K-means++')
-    spectral.scatter(x,y, c = spec_locations, cmap=cmap)
-    kmeans.scatter(x,y, c = kmeans_locations, cmap=cmap)
+    spectral.scatter(x, y, c=spec_locations, cmap=cmap)
+    kmeans.scatter(x, y, c=kmeans_locations, cmap=cmap)
     info = generate_info(data)
     plt.figtext(0.5, 0.01, info, ha="center", fontsize=18,
                 bbox={"alpha": 0.5, "pad": 5})

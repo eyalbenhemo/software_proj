@@ -43,9 +43,8 @@ def read_data():
     sample = make_blobs(n_samples=N, n_features=d, centers=K)
     data = sample[0]
 
-    #generate data.txt
+    # generate data.txt
     print(sample)
     data_out = pd.DataFrame(sample[0])
     data_out['new'] = sample[1]
     data_out.to_csv('data.txt', index=False, header=False)
-

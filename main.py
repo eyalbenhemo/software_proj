@@ -4,6 +4,7 @@ from kmeans_pp import k_means_pp as kmeans
 import pandas as pd
 from create_visualization import create_visualization_file
 
+
 def write_clusters(locations, f, K):
     clusters = pd.DataFrame(locations).groupby([0]).indices
     for i in range(K):
@@ -13,7 +14,6 @@ def write_clusters(locations, f, K):
 
 # Init data and params
 data.read_data()
-
 
 # Informative message
 print("The maximum capacity for 2-dimensional points is: N=" + str(data.max_cap[2]['N']) + " and K=" + str(
@@ -36,12 +36,12 @@ print(spec_locations, "\n------------------------------------")
 kmeans_locations = kmeans(data.data, K, data.N, data.d, data.MAX_ITER)
 print(kmeans_locations)
 
-#Generate clusters.txt
+# Generate clusters.txt
 f = open("clusters.txt", 'w')
 f.write(str(K))
 write_clusters(spec_locations, f, K)
 write_clusters(kmeans_locations, f, K)
 f.close()
 
-#Generate clusters.pdf
+# Generate clusters.pdf
 create_visualization_file(data, spec_locations, kmeans_locations)
