@@ -26,13 +26,13 @@ def QR_iter(A: np.array):
         tempQ = Qbar @ gs["Q"]
         dif = np.max(np.abs(Qbar) - np.abs(tempQ))
         if -epsilon <= dif <= epsilon:
-            print("finished after iteration " + str(i))
             break
         Qbar = tempQ
     return {"Abar": Abar, "Qbar": Qbar}
 
 
 def set_k(eigenvalues: np.array):
+    eigenvalues = np.sort(eigenvalues)
     k = 0
     lambda_k = 0
     n = len(eigenvalues)

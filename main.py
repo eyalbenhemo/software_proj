@@ -3,6 +3,7 @@ from normalized_specrtal import norm_spect_clustering
 from kmeans_pp import k_means_pp as kmeans
 import pandas as pd
 from create_visualization import create_visualization_file
+import time
 
 
 def write_clusters(locations, f, K):
@@ -11,6 +12,8 @@ def write_clusters(locations, f, K):
         f.write('\n')
         f.write(','.join(map(str, clusters[i])))
 
+
+start = time.time()
 
 # Init data and params
 data.read_data()
@@ -43,3 +46,5 @@ f.close()
 
 # Generate clusters.pdf
 create_visualization_file(data, spec_locations, kmeans_locations)
+
+print(str((time.time() - start) / 60))
