@@ -50,7 +50,7 @@ def create_3d(data, spec_locations, kmeans_locations):
     y = data.data[:, 1]
     z = data.data[:, 2]
     spectral.set_title('Normalized spectral clustering')
-    kmeans.set_title('K-means++')
+    kmeans.set_title('K-means')
     spectral.scatter(x, y, z, c=spec_locations, cmap=cmap)
     kmeans.scatter(x, y, z, c=kmeans_locations, cmap=cmap)
     spec_jaccard = jaccard(data.blobs, spec_locations)
