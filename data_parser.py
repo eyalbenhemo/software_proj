@@ -15,7 +15,6 @@ RANDOM = True
 blobs = None
 orijK = None
 
-
 def read_data():
     global K, N, d, MAX_ITER, data, RANDOM, blobs, orijK
     d = random(low=2, high=4)
@@ -32,6 +31,7 @@ def read_data():
         exit("K has to be positive number")
     if not (N.isnumeric() and int(N) > 0):
         exit("N has to be positive number")
+    orijK = int(orijK)
     K = int(orijK)
     N = int(N)
     if K >= N:
@@ -47,7 +47,7 @@ def read_data():
     blobs = sample[1]
 
     # generate data.txt
-    print(sample)
+    # print(sample)
     data_out = pd.DataFrame(sample[0])
     data_out['new'] = sample[1]
     data_out.to_csv('data.txt', index=False, header=False)

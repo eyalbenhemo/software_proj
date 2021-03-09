@@ -7,11 +7,11 @@ def gram_schmidt(A: np.array):
     R = np.zeros((n, n))
     Q = np.empty([n, n])
     for i in range(n):
-        R[i, i] = np.linalg.norm(U[i])
-        Q[i] = U[i] / R[i, i]
+        R[i, i] = np.linalg.norm(U[:, i])
+        Q[:, i] = U[:, i] / R[i, i]
         for j in range(i + 1, n):
-            R[i, j] = np.transpose(Q[i]) @ U[j]
-            U[j] = U[j] - R[i, j] * Q[i]
+            R[i, j] = np.transpose(Q[:, i]) @ U[:, j]
+            U[:, j] = U[:, j] - R[i, j] * Q[:, i]
     return {"Q": Q, "R": R}
 
 
@@ -22,7 +22,7 @@ def QR_iter(A: np.array):
     Qbar = np.identity(n)
     for i in range(n):
         gs = gram_schmidt(Abar)
-        Abar = gs["Q"] @ gs["R"]
+        Abar = gs["R"] @ gs["Q"]
         tempQ = Qbar @ gs["Q"]
         dif = np.max(np.abs(Qbar) - np.abs(tempQ))
         if -epsilon <= dif <= epsilon:
