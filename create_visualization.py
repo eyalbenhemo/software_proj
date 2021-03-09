@@ -31,7 +31,7 @@ def create_2d(data, spec_locations, kmeans_locations):
     x = data.data[:,0]
     y = data.data[:,1]
     spectral.set_title('Normalized spectral clustering')
-    kmeans.set_title('K-means++')
+    kmeans.set_title('K-means')
     spectral.scatter(x,y, c = spec_locations, cmap=cmap)
     kmeans.scatter(x,y, c = kmeans_locations, cmap=cmap)
     spec_jaccard = jaccard(data.blobs, spec_locations)

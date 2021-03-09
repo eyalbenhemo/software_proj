@@ -22,7 +22,7 @@ def QR_iter(A: np.array):
     Qbar = np.identity(n)
     for i in range(n):
         gs = gram_schmidt(Abar)
-        Abar = gs["Q"] @ gs["R"]
+        Abar = gs["R"] @ gs["Q"]
         tempQ = Qbar @ gs["Q"]
         dif = np.max(np.abs(Qbar) - np.abs(tempQ))
         if -epsilon <= dif <= epsilon:

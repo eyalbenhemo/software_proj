@@ -23,8 +23,8 @@ def weighted_adjacency(N, mat):
     W = np.transpose(W) + W
     return W
 
-
 # step 2
+
 def diagonal_mat_minus_sqrt(N, W):
     return np.diag(np.array([math.pow(np.sum(W[i]), -0.5) for i in range(N)]))
 
