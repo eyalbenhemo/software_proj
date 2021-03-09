@@ -36,8 +36,6 @@ def norm_laplacian(N, W, D):
 # step 3 and 4
 def eigengap_heuristic(L):
     eigens = eh.QR_iter(L)
-    temp = np.linalg.qr(L)
-    print(temp[0]@temp[1])
     K = eh.set_k(np.diag(eigens["Abar"]))
     ind = np.argsort(np.diag(eigens["Abar"]))[0:K]
     U = eigens["Qbar"][:, ind]

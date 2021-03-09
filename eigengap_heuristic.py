@@ -26,6 +26,7 @@ def QR_iter(A: np.array):
         tempQ = Qbar @ gs["Q"]
         dif = np.max(np.abs(Qbar) - np.abs(tempQ))
         if -epsilon <= dif <= epsilon:
+            print("finished after iteration " + str(i))
             break
         Qbar = tempQ
     return {"Abar": Abar, "Qbar": Qbar}
