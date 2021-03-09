@@ -31,10 +31,8 @@ if not data.RANDOM:
 # Calling the k-mean algorithm
 # step 6
 spec_locations = kmeans(T, K, data.N, d_spect, data.MAX_ITER)
-print(spec_locations, "\n------------------------------------")
 # Execution of Kmeans++ HW2
 kmeans_locations = kmeans(data.data, K, data.N, data.d, data.MAX_ITER)
-print(kmeans_locations)
 
 #Generate clusters.txt
 f = open("clusters.txt", 'w')
