@@ -13,12 +13,14 @@ def k_means_pp(mat, K, N, d, MAX_ITER):
     for j in range(1, K):
         p = get_probs(mat, centroids_values, j, min_dist)
         if np.isnan(p[0]).any():
-            exit("Probabilities vector failure - all observations distances are 0 from a some centroid")
+            exit("Probabilities vector failure - all observations distances from some centroid are 0!")
         centroids[j] = np.random.choice(N, 1, p=p[0])
         centroids_values[j] = mat[centroids[j]].copy()
         min_dist = p[1]
     centroids = np.ndarray.tolist(centroids)
     locations = msp.calc_centroids(K, N, d, MAX_ITER, np.ndarray.tolist(mat), centroids)
+    if locations is None:
+        exit("Dynamic memory problem in the C code!")
     return locations
 
 
