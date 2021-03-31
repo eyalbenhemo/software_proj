@@ -8,9 +8,13 @@ def gram_schmidt(A: np.array):
     Q = np.empty([n, n])
     for i in range(n):
         R[i, i] = np.linalg.norm(U[:, i])
+        if R[i, i] == 0:
+            # https://moodle.tau.ac.il/mod/forum/discuss.php?d=77599
+            # this is really rear, thus we decided to print an error message
+            exit("R[" + str(i) + ", " + str(i) + "]== 0. Please try again.")
         Q[:, i] = U[:, i] / R[i, i]
         R[i, i:] = Q[:, i] @ U[:, i:]
-        U[:, i + 1:] = U[:, i + 1:] - R[i, i + 1:][np.newaxis, :] * np.transpose([Q[:, i]] * (n - i - 1))
+        U[:, i + 1:] -= R[i, i + 1:][np.newaxis, :] * np.transpose([Q[:, i]] * (n - i - 1))
     return {"Q": Q, "R": R}
 
 
