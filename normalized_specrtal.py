@@ -3,7 +3,6 @@ import data_parser as data
 import eigengap_heuristic as eh
 import math
 
-
 def norm_spect_clustering():
     mat = data.data
     N = data.N
