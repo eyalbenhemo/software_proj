@@ -9,9 +9,8 @@ def gram_schmidt(A: np.array):
     for i in range(n):
         R[i, i] = np.linalg.norm(U[:, i])
         Q[:, i] = U[:, i] / R[i, i]
-        for j in range(i + 1, n):
-            R[i, j] = np.transpose(Q[:, i]) @ U[:, j]
-            U[:, j] = U[:, j] - R[i, j] * Q[:, i]
+        R[i, i:] = Q[:, i] @ U[:, i:]
+        U[:, i + 1:] = U[:, i + 1:] - R[i, i + 1:][np.newaxis, :] * np.transpose([Q[:, i]] * (n - i - 1))
     return {"Q": Q, "R": R}
 
 
@@ -26,13 +25,13 @@ def QR_iter(A: np.array):
         tempQ = Qbar @ gs["Q"]
         dif = np.max(np.abs(Qbar) - np.abs(tempQ))
         if -epsilon <= dif <= epsilon:
-            print("finished after iteration " + str(i))
             break
         Qbar = tempQ
     return {"Abar": Abar, "Qbar": Qbar}
 
 
 def set_k(eigenvalues: np.array):
+    eigenvalues = np.sort(eigenvalues)
     k = 0
     lambda_k = 0
     n = len(eigenvalues)

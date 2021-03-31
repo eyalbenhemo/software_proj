@@ -3,8 +3,8 @@ import pandas as pd
 from numpy.random import randint as random
 from sklearn.datasets import make_blobs
 
-max_cap = {2: {'N': 200, 'K': 10},
-           3: {'N': 100, 'K': 8}}
+max_cap = {2: {'N': 400, 'K': 20},
+           3: {'N': 400, 'K': 20}}
 
 K = None
 N = None
@@ -14,6 +14,7 @@ data = None
 RANDOM = True
 blobs = None
 orijK = None
+
 
 def read_data():
     global K, N, d, MAX_ITER, data, RANDOM, blobs, orijK
@@ -47,7 +48,6 @@ def read_data():
     blobs = sample[1]
 
     # generate data.txt
-    # print(sample)
     data_out = pd.DataFrame(sample[0])
     data_out['new'] = sample[1]
     data_out.to_csv('data.txt', index=False, header=False)

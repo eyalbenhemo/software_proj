@@ -12,6 +12,8 @@ def delete(c):
     c.run("rm *mykmeanssp*.so")
 
 
+# command: python3.8.5 -m invoke run -k -n --[ no-] Random
+# to run without random --no-Random
 @task
 def run(c, k, n, Random=True):
     # c.run("python3.8.5 setup.py build_ext --inplace")

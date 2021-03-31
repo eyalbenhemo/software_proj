@@ -25,15 +25,19 @@ def generate_info(data, spec_jaccard, kmeans_jaccard):
     return res
 
 
-def create_2d(data, spec_locations, kmeans_locations):
-    fig, (spectral, kmeans) = plt.subplots(1, 2)
+def create(data, spec_locations, kmeans_locations, dim):
+    if dim == 3:
+        fig, (spectral, kmeans) = plt.subplots(1, 2, subplot_kw=dict(projection='3d'))
+    else:
+        fig, (spectral, kmeans) = plt.subplots(1, 2)
     cmap = plt.cm.jet
     x = data.data[:, 0]
     y = data.data[:, 1]
+    z = (data.data[:, 2] if dim == 3 else None)
     spectral.set_title('Normalized spectral clustering')
-    kmeans.set_title('K-means++')
-    spectral.scatter(x, y, c=spec_locations, cmap=cmap)
-    kmeans.scatter(x, y, c=kmeans_locations, cmap=cmap)
+    kmeans.set_title('K-means')
+    spectral.scatter(x, y, z, c=spec_locations, cmap=cmap)
+    kmeans.scatter(x, y, z, c=kmeans_locations, cmap=cmap)
     spec_jaccard = jaccard(data.blobs, spec_locations)
     kmeans_jaccard = jaccard(data.blobs, kmeans_locations)
     info = generate_info(data, spec_jaccard, kmeans_jaccard)
@@ -43,27 +47,5 @@ def create_2d(data, spec_locations, kmeans_locations):
     fig.savefig("clusters.pdf")
 
 
-def create_3d(data, spec_locations, kmeans_locations):
-    fig, (spectral, kmeans) = plt.subplots(1, 2, subplot_kw=dict(projection='3d'))
-    cmap = plt.cm.jet
-    x = data.data[:, 0]
-    y = data.data[:, 1]
-    z = data.data[:, 2]
-    spectral.set_title('Normalized spectral clustering')
-    kmeans.set_title('K-means')
-    spectral.scatter(x, y, z, c=spec_locations, cmap=cmap)
-    kmeans.scatter(x, y, z, c=kmeans_locations, cmap=cmap)
-    spec_jaccard = jaccard(data.blobs, spec_locations)
-    kmeans_jaccard = jaccard(data.blobs, kmeans_locations)
-    info = generate_info(data, spec_jaccard, kmeans_jaccard)
-    fig.subplots_adjust(bottom=0.2)
-    plt.figtext(x=0.5, y=0.01, s=info, ha="center", fontsize=12)
-    # plt.show()
-    fig.savefig("clusters.pdf")
-
-
 def create_visualization_file(data, spec_locations, kmeans_locations):
-    if len(data.data[0]) == 2:
-        create_2d(data, spec_locations, kmeans_locations)
-    else:
-        create_3d(data, spec_locations, kmeans_locations)
+    create(data, spec_locations, kmeans_locations, len(data.data[0]))
