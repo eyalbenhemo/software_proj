@@ -17,7 +17,7 @@ def jaccard(blobs, locations):
 
 
 def generate_info(data, spec_jaccard, kmeans_jaccard):
-    res = "Data was generated from the following values:\n" \
+    res = "Data was generated from the values:\n" \
           "n = {} , k = {}\n" \
           "The k that was used for both algorithms was {}\n" \
           "The Jaccard measure for Spectral Clustering: {}\n" \

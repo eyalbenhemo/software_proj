@@ -33,7 +33,7 @@ def read_data():
     if not (N.isnumeric() and int(N) > 0):
         exit("N has to be positive number")
     orijK = int(orijK)
-    K = int(orijK)
+    K = orijK
     N = int(N)
     if K >= N:
         exit("K must be smaller than N")
@@ -50,4 +50,32 @@ def read_data():
     # generate data.txt
     data_out = pd.DataFrame(sample[0])
     data_out['new'] = sample[1]
+    data_out.to_csv('data.txt', index=False, header=False)
+
+
+def read_data1():
+    import numpy as np
+    global K, N, d, MAX_ITER, data, RANDOM, blobs, orijK
+    parser = argparse.ArgumentParser()
+    temp, args = parser.parse_known_args()
+
+    # Code validation
+    if len(args) != 3:
+        exit("3 arguments required")
+    filename = args[0]
+    RANDOM = args[1]
+    # Init data frame with the input file
+    data = pd.read_csv(filename, header=None)
+    data = pd.DataFrame.to_numpy(data, dtype=np.float64)
+    N, d = data.shape
+    d -= 1
+    blobs = data[:, d]
+    data = data[:, 0:d]
+    RANDOM = (RANDOM != "False")
+    orijK = len(np.unique(blobs)) if RANDOM else int(args[2])
+    K = orijK
+
+    # generate data.txt
+    data_out = pd.DataFrame(data)
+    data_out['new'] = blobs
     data_out.to_csv('data.txt', index=False, header=False)
