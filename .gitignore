@@ -2,7 +2,7 @@
 /build/
 /venv/
 /cmake-build-debug/
-/mykmeanssp.cp37-win32.pyd
+/*.pyd
 /CMakeLists.txt
 /data.txt
 /clusters.txt
