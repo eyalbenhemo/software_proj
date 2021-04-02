@@ -1,8 +1,8 @@
 import numpy as np
+import data_parser as data
 
 
-def gram_schmidt(A: np.array):
-    n = len(A)
+def gram_schmidt(A, n):
     U = np.copy(A)
     R = np.zeros((n, n))
     Q = np.empty([n, n])
@@ -22,13 +22,13 @@ def gram_schmidt(A: np.array):
     return {"Q": Q, "R": R}
 
 
-def QR_iter(A: np.array):
-    n = len(A)
+def QR_iter(A):
+    n = data.N
     epsilon = 0.0001
     Abar = np.copy(A)
     Qbar = np.identity(n)
     for i in range(n):
-        gs = gram_schmidt(Abar)
+        gs = gram_schmidt(Abar, n)
         Abar = gs["R"] @ gs["Q"]
         tempQ = Qbar @ gs["Q"]
         dif = np.max(np.abs(Qbar) - np.abs(tempQ))
@@ -42,8 +42,7 @@ def set_k(eigenvalues: np.array):
     eigenvalues = np.sort(eigenvalues)
     k = 0
     lambda_k = 0
-    n = len(eigenvalues)
-    for i in range(n // 2):
+    for i in range(data.N // 2):
         candidate = abs(eigenvalues[i] - eigenvalues[i + 1])
         if candidate > lambda_k:
             k = i

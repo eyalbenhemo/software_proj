@@ -69,7 +69,7 @@ def read_data1():
     data = pd.DataFrame.to_numpy(data, dtype=np.float64)
     N, d = data.shape
     d -= 1
-    blobs = data[:, d]
+    blobs = np.array(data[:, d], dtype=int)
     data = data[:, 0:d]
     RANDOM = (RANDOM != "False")
     orijK = len(np.unique(blobs)) if RANDOM else int(args[2])
