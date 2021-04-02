@@ -151,7 +151,7 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
     int K, N, d, MAX_ITER, i, j;
     double **observations, **centroids, **result;
     int *clusterAllocations;
-    PyObject *Pyobservations, *K_initial_index, *PyCentroids, *Pysublists, *PyLocations, *item;
+    PyObject *Pyobservations, *K_initial_index, *PyLocations, *item;
     /* Take care for the format of how get params to be like excepted */
     if (!PyArg_ParseTuple(args, "iiiiOO", &K, &N, &d, &MAX_ITER, &Pyobservations, &K_initial_index)) {
         return NULL;

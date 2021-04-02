@@ -13,7 +13,11 @@ def gram_schmidt(A: np.array):
             # this is really rear, thus we decided to print an error message
             exit("R[" + str(i) + ", " + str(i) + "]== 0. Please try again.")
         Q[:, i] = U[:, i] / R[i, i]
-        R[i, i:] = Q[:, i] @ U[:, i:]
+        # the j'th element in the i'th row in R from i'th element till the end equal to the i'th column in Q multiple
+        # the j'th column in U
+        R[i, i + 1:] = Q[:, i] @ U[:, i + 1:]  # Check this row!
+        # Take the i'th column in Q and mul it with each scalar in the i'th row from the (i+1)'th element till the end.
+        # Subtract each vector we got from the matching column in U.
         U[:, i + 1:] -= R[i, i + 1:][np.newaxis, :] * np.transpose([Q[:, i]] * (n - i - 1))
     return {"Q": Q, "R": R}
 
