@@ -3,6 +3,7 @@ from normalized_specrtal import norm_spect_clustering
 from kmeans_pp import k_means_pp as kmeans
 import pandas as pd
 from create_visualization import create_visualization_file
+from time import time
 
 
 def write_clusters(locations, f, K):
@@ -12,13 +13,14 @@ def write_clusters(locations, f, K):
         f.write(','.join(map(str, clusters[i])))
 
 
+start = time()
 # Init data and params
-data.read_data1()
+data.read_data()
 # Informative message
-print("The maximum capacity for 2-dimensional points is: N=" + str(data.max_cap[2]['N']) + " and K=" + str(
-    data.max_cap[2]['K']))
-print("The maximum capacity for 3-dimensional points is: N=" + str(data.max_cap[3]['N']) + " and K=" + str(
-    data.max_cap[3]['K']))
+print("The maximum capacity for 2-dimensional points is: N=" +
+      str(data.max_cap[2]['N']) + " and K=" + str(data.max_cap[2]['K']))
+print("The maximum capacity for 3-dimensional points is: N=" +
+      str(data.max_cap[3]['N']) + " and K=" + str(data.max_cap[3]['K']))
 
 # Execution of Normalized Spectral Clustering
 # step 1-5
@@ -40,3 +42,4 @@ f.close()
 
 # Generate clusters.pdf
 create_visualization_file(data, spec_locations, kmeans_locations)
+print(str(time() - start))

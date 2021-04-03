@@ -3,12 +3,14 @@
 #include <Python.h>
 
 /* Note: when memory error happens we return Py_None
- * according to https://moodle.tau.ac.il/mod/forum/discuss.php?d=87722 no need to free if we exit */
+ * according to https://moodle.tau.ac.il/mod/forum/discuss.php?d=87722 no need
+ * to free if we exit */
 
 /* Get array of pointer to observations and calc their avg */
 static double **
-calc_centroids(double **observations, const int *clusterAllocations, double **new_centroids, int *clustersLengths,
-               int N, int K, int d) {
+calc_centroids(double **observations, const int *clusterAllocations,
+               double **new_centroids, int *clustersLengths, int N, int K,
+               int d) {
     int i, j; /* Looping variables */
 
     for (i = 0; i < K; i++) { /* Initialize clusters lengths and values to 0 */
@@ -17,11 +19,13 @@ calc_centroids(double **observations, const int *clusterAllocations, double **ne
             new_centroids[i][j] = 0;
         }
     }
-
-    for (i = 0; i < N; i++) { /* Add all the values of the of the observations to the relevant centroid */
-        clustersLengths[clusterAllocations[i]]++; /* Update number of observations in vector */
+    /* Add all the values of the of the observations to the relevant centroid */
+    for (i = 0; i < N; i++) {
+        /* Update number of observations in vector */
+        clustersLengths[clusterAllocations[i]]++;
         for (j = 0; j < d; j++) {
-            new_centroids[clusterAllocations[i]][j] += observations[i][j]; /* Add observation to vector */
+            /* Add observation to vector */
+            new_centroids[clusterAllocations[i]][j] += observations[i][j];
         }
     }
 
@@ -52,8 +56,10 @@ static double euclidian_distance(const double a[], const double b[], int d) {
     return dist;
 }
 
-/* Get pointer to observation and pointer to array of centroid and return the index of closest centroid */
-static int find_closest_centroid(const double a[], double **centroids, int K, int d) {
+/* Get pointer to observation and pointer to array of centroid and return the
+ * index of closest centroid */
+static int
+find_closest_centroid(const double a[], double **centroids, int K, int d) {
     double min_dist = -1;
     int min_cent = 0;
     int k = 0;
@@ -69,7 +75,8 @@ static int find_closest_centroid(const double a[], double **centroids, int K, in
 }
 
 /* Get 2 array of centroids and check if they equal */
-static int check_if_equals(double **new_centroids, double **centroids, int K, int d) {
+static int
+check_if_equals(double **new_centroids, double **centroids, int K, int d) {
     int i, j;
 
     for (i = 0; i < K; i++) {
@@ -87,7 +94,8 @@ static int check_if_equals(double **new_centroids, double **centroids, int K, in
  * Calc centroids while num of iter <= MAX_ITER and last(centroids) != centroids
  * return centroids */
 static double **
-approximation_loop(double **observations, double **centroids, int **clusterAllocations_pointer, int N, int K, int d,
+approximation_loop(double **observations, double **centroids,
+                   int **clusterAllocations_pointer, int N, int K, int d,
                    int MAX_ITER) {
     int i, j;
     double **newCentroids; /* New centroids to be returned */
@@ -111,9 +119,11 @@ approximation_loop(double **observations, double **centroids, int **clusterAlloc
     }
     for (j = 0; j < MAX_ITER; j++) {
         for (i = 0; i < N; i++) {
-            clusterAllocations[i] = find_closest_centroid(observations[i], centroids, K, d);
+            clusterAllocations[i] = find_closest_centroid(observations[i],
+                                                          centroids, K, d);
         }
-        calc_centroids(observations, clusterAllocations, newCentroids, clustersLengths, N, K, d);
+        calc_centroids(observations, clusterAllocations, newCentroids,
+                       clustersLengths, N, K, d);
         if (check_if_equals(centroids, newCentroids, K, d)) {
             break;
         }
@@ -153,7 +163,8 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
     int *clusterAllocations;
     PyObject *Pyobservations, *K_initial_index, *PyLocations, *item;
     /* Take care for the format of how get params to be like excepted */
-    if (!PyArg_ParseTuple(args, "iiiiOO", &K, &N, &d, &MAX_ITER, &Pyobservations, &K_initial_index)) {
+    if (!PyArg_ParseTuple(args, "iiiiOO", &K, &N, &d, &MAX_ITER,
+                          &Pyobservations, &K_initial_index)) {
         return NULL;
     }
 
@@ -169,7 +180,8 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
     if (clusterAllocations == NULL) {
         Py_RETURN_NONE;
     }
-    for (i = 0; i < N; i++) { /* Taking the observations from Python to C list */
+    for (i = 0;
+         i < N; i++) { /* Taking the observations from Python to C list */
         observations[i] = malloc(d * sizeof(double));
         if (observations[i] == NULL) {
             Py_RETURN_NONE;
@@ -179,11 +191,14 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
             observations[i][j] = PyFloat_AsDouble(PyList_GetItem(item, j));
         }
     }
-    for (i = 0; i < K; i++) { /* Initializing the first K centroid based on the Python Centroids */
-        centroids[i] = observations[PyLong_AsLong(PyList_GetItem(K_initial_index, i))];
+    /* Initializing the first K centroid based on the Python Centroids */
+    for (i = 0; i < K; i++) {
+        centroids[i] = observations[PyLong_AsLong(
+                PyList_GetItem(K_initial_index, i))];
     }
     /* Call approximation_loop and return the centroids */
-    result = approximation_loop(observations, centroids, &clusterAllocations, N, K, d, MAX_ITER);
+    result = approximation_loop(observations, centroids, &clusterAllocations, N,
+                                K, d, MAX_ITER);
     if (result == NULL) {
         Py_RETURN_NONE;
     }
@@ -211,12 +226,10 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
 
 /* The C-API function that will be available to the API */
 static PyMethodDef capiMethods[] = {
-        {"calc_centroids",                   /* the Python method name that will be used */
-                (PyCFunction) calc_centroids_capi, /* the C-function that implements the Python function and returns static PyObject*  */
-                      METH_VARARGS,           /* flags indicating parametersaccepted for this function */
-                         PyDoc_STR(
-                                 "Kmeans Algorithem get the params and the k_initials and calc the centroids")}, /* The docstring for the function */
-        {NULL,  NULL, 0, NULL}
+        {"calc_centroids", (PyCFunction) calc_centroids_capi, METH_VARARGS,
+        PyDoc_STR("Kmeans Algorithem get the params and the k_initials"
+                  "and calc the centroids")},
+        {NULL, NULL, 0, NULL}
 };
 
 /* The C-API module */
