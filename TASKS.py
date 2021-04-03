@@ -16,7 +16,6 @@ def delete(c):
 # to run without random --no-Random
 @task
 def run(c, k, n, Random=True):
-    # c.run("python3.8.5 setup.py build_ext --inplace")
-    c.run("python setup.py build_ext --inplace")
+    build(c)
     # c.run("python3.8.5 main.py {} {} {}".format(k, n, Random))
     c.run("python main.py {} {} {}".format(k, n, Random))
