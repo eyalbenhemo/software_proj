@@ -3,8 +3,8 @@ import pandas as pd
 from numpy.random import randint as random
 from sklearn.datasets import make_blobs
 
-max_cap = {2: {'N': 400, 'K': 20},
-           3: {'N': 400, 'K': 20}}
+max_cap = {2: {'N': 200, 'K': 10},
+           3: {'N': 200, 'K': 10}}
 
 K = None
 N = None
@@ -17,7 +17,6 @@ orijK = None
 
 
 def read_data():
-
     print("The maximum capacity for 2-dimensional points is: N=" +
           str(max_cap[2]['N']) + " and K=" + str(max_cap[2]['K']))
     print("The maximum capacity for 3-dimensional points is: N=" +
@@ -26,36 +25,34 @@ def read_data():
     global K, N, d, MAX_ITER, data, RANDOM, blobs, orijK
     d = random(low=2, high=4)
     parser = argparse.ArgumentParser()
-    temp, args = parser.parse_known_args()
-
-    # Code validation
-    if len(args) != 3:
-        exit("3 arguments required")
-    orijK = args[0]
-    N = args[1]
-    RANDOM = args[2]
-    if not (orijK.isnumeric() and int(orijK) > 0):
-        exit("K has to be positive number")
-    if not (N.isnumeric() and int(N) > 0):
-        exit("N has to be positive number")
-    orijK = int(orijK)
-    K = orijK
-    N = int(N)
-    if K >= N:
-        exit("K must be smaller than N")
-    if not (RANDOM == "True" or RANDOM == "False"):
-        exit("RANDOM has to be either True or False")
-    RANDOM = (RANDOM != "False")
+    parser.add_argument("K")
+    parser.add_argument("N")
+    parser.add_argument("Random")
+    args = parser.parse_args()
+    orijK = args.K
+    N = args.N
+    RANDOM = (args.Random == "True")
     if RANDOM:
         N = random(low=max_cap[d]['N'] / 2, high=max_cap[d]['N'])
         K = random(low=max_cap[d]['K'] / 2, high=max_cap[d]['K'])
+        orijK = K
+    else:
+        if not (str(orijK).isnumeric() and int(orijK) > 0):
+            exit("if no random, please send positive num for K")
+        if not (str(N).isnumeric() and int(N) > 0):
+            exit("if no random, please send positive num for N")
+        orijK = int(orijK)
+        K = orijK
+        N = int(N)
+        if K >= N:
+            exit("K must be smaller than N")
     sample = make_blobs(n_samples=N, n_features=d, centers=K)
     data = sample[0]
     blobs = sample[1]
 
     # generate data.txt
-    data_out = pd.DataFrame(sample[0])
-    data_out['new'] = sample[1]
+    data_out = pd.DataFrame(data)
+    data_out['new'] = blobs
     data_out.to_csv('data.txt', index=False, header=False)
 
 

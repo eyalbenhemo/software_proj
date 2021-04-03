@@ -15,7 +15,10 @@ def delete(c):
 # command: python3.8.5 -m invoke run -k -n --[ no-] Random
 # to run without random --no-Random
 @task
-def run(c, k, n, Random=True):
+def run(c, k=None, n=None, Random=True):
     build(c)
-    # c.run("python3.8.5 main.py {} {} {}".format(k, n, Random))
-    c.run("python main.py {} {} {}".format(k, n, Random))
+    if Random:
+        c.run("python main.py 0 0 True")
+    else:
+        # c.run("python3.8.5 main.py {} {} 0".format(k, n))
+        c.run("python main.py {} {} False".format(k, n))
