@@ -24,18 +24,16 @@ def generate_cluster(spec_locations, kmeans_locations):
 def main():
     start = time()
     # Init data and params
-    data.read_data()
+    data.read_data1()
     # Execution of Normalized Spectral Clustering. step 1-5
-    T, d_spect = norm_spect_clustering()
-    if data.RANDOM:
-        data.K = d_spect
+    T = norm_spect_clustering()
     # Calling the k-mean algorithm. step 6
-    spec_locations = kmeans(T, data.K, data.N, d_spect, data.MAX_ITER)
+    spec_locations = kmeans(T, data.K, data.N, data.K, data.MAX_ITER)
     kmeans_locations = kmeans(data.data, data.K, data.N, data.d, data.MAX_ITER)
     # Generate clusters.txt
     generate_cluster(spec_locations, kmeans_locations)
     # Generate clusters.pdf
-    create_visualization_file(data, spec_locations, kmeans_locations, data.N)
+    create_visualization_file(data, spec_locations, kmeans_locations, data.d)
     print(str(time() - start))
 
 
