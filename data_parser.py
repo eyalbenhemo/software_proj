@@ -67,7 +67,7 @@ def read_data1():
     RANDOM = (args[2] == 'True')
     # Init data frame with the input file
     data = pd.read_csv(filename, header=None)
-    data = pd.DataFrame.to_numpy(data, dtype='float32')
+    data = pd.DataFrame.to_numpy(data)
     N, d = data.shape
     d -= 1
     blobs = np.array(data[:, d], dtype=int)
