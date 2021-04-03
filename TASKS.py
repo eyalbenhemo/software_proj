@@ -18,6 +18,7 @@ def delete(c):
 def run(c, k=None, n=None, Random=True):
     build(c)
     if Random:
+        # c.run("python3.8.5 main.py 0 0 True")
         c.run("python main.py 0 0 True")
     else:
         # c.run("python3.8.5 main.py {} {} 0".format(k, n))
