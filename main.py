@@ -3,8 +3,8 @@ from normalized_specrtal import norm_spect_clustering
 from kmeans_pp import k_means_pp as kmeans
 import pandas as pd
 from create_visualization import create_visualization_file
-from time import time
-
+import time
+start = time.time()
 
 def write_clusters(locations, f, K):
     clusters = pd.DataFrame(locations).groupby([0]).indices
@@ -22,11 +22,10 @@ def generate_cluster(spec_locations, kmeans_locations):
 
 
 def main():
-    start = time()
     # Init data and params
     data.read_data1()
     # Execution of Normalized Spectral Clustering. step 1-5
-    T = norm_spect_clustering()
+    T = norm_spect_clustering(start)
     # Calling the k-mean algorithm. step 6
     spec_locations = kmeans(T, data.K, data.N, data.K, data.MAX_ITER)
     kmeans_locations = kmeans(data.data, data.K, data.N, data.d, data.MAX_ITER)
@@ -34,7 +33,7 @@ def main():
     generate_cluster(spec_locations, kmeans_locations)
     # Generate clusters.pdf
     create_visualization_file(data, spec_locations, kmeans_locations, data.d)
-    print(str(time() - start))
+    print(str(time.time() - start))
 
 
 main()
