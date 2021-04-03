@@ -23,7 +23,7 @@ def generate_cluster(spec_locations, kmeans_locations):
 
 def main():
     # Init data and params
-    data.read_data1()
+    data.read_data()
     # Execution of Normalized Spectral Clustering. step 1-5
     T = norm_spect_clustering(start)
     # Calling the k-mean algorithm. step 6
