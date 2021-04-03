@@ -12,7 +12,6 @@ calc_centroids(double **observations, const int *clusterAllocations,
                double **new_centroids, int *clustersLengths, int N, int K,
                int d) {
     int i, j; /* Looping variables */
-
     for (i = 0; i < K; i++) { /* Initialize clusters lengths and values to 0 */
         clustersLengths[i] = 0;
         for (j = 0; j < d; j++) {
@@ -28,17 +27,12 @@ calc_centroids(double **observations, const int *clusterAllocations,
             new_centroids[clusterAllocations[i]][j] += observations[i][j];
         }
     }
-
     for (i = 0; i < K; i++) { /* Update the means to all centroids */
         for (j = 0; j < d; j++) {
-            if (clustersLengths[i]) {
-                new_centroids[i][j] /= clustersLengths[i];
-            } else {
-                new_centroids[i][j] = 0;
-            }
+            if (clustersLengths[i]) { new_centroids[i][j] /= clustersLengths[i]; }
+            else { new_centroids[i][j] = 0; }
         }
     }
-
     return new_centroids;
 }
 
@@ -47,12 +41,10 @@ static double euclidian_distance(const double a[], const double b[], int d) {
     double dist = 0;
     int i = 0;
     double temp;
-
     for (; i < d; i++) {
         temp = (a[i] - b[i]) * (a[i] - b[i]);
         dist += temp;
     }
-
     return dist;
 }
 
@@ -78,15 +70,11 @@ find_closest_centroid(const double a[], double **centroids, int K, int d) {
 static int
 check_if_equals(double **new_centroids, double **centroids, int K, int d) {
     int i, j;
-
     for (i = 0; i < K; i++) {
         for (j = 0; j < d; j++) {
-            if (centroids[i][j] != new_centroids[i][j]) {
-                return 0;
-            }
+            if (centroids[i][j] != new_centroids[i][j]) { return 0; }
         }
     }
-
     return 1;
 }
 
@@ -103,19 +91,12 @@ approximation_loop(double **observations, double **centroids,
     int *clustersLengths; /* Create array of how many observations go to each centroid */
     double **temp; /* Swap variable */
     newCentroids = malloc(K * sizeof(double *));
-    if (newCentroids == NULL) {
-        return NULL;
-    }
+    if (newCentroids == NULL) { return NULL; }
     clustersLengths = calloc(K, sizeof(int));
-    if (clustersLengths == NULL) {
-        return NULL;
-    }
-
+    if (clustersLengths == NULL) { return NULL; }
     for (i = 0; i < K; i++) { /* Initialize clusters lengths and values to 0 */
         newCentroids[i] = calloc(d, sizeof(double));
-        if (newCentroids[i] == NULL) {
-            return NULL;
-        }
+        if (newCentroids[i] == NULL) { return NULL; }
     }
     for (j = 0; j < MAX_ITER; j++) {
         for (i = 0; i < N; i++) {
@@ -124,20 +105,14 @@ approximation_loop(double **observations, double **centroids,
         }
         calc_centroids(observations, clusterAllocations, newCentroids,
                        clustersLengths, N, K, d);
-        if (check_if_equals(centroids, newCentroids, K, d)) {
-            break;
-        }
+        if (check_if_equals(centroids, newCentroids, K, d)) { break; }
         if (!j) {
             centroids = newCentroids;
             newCentroids = malloc(K * sizeof(double *));
-            if (newCentroids == NULL) {
-                return NULL;
-            }
+            if (newCentroids == NULL) { return NULL; }
             for (i = 0; i < K; i++) {
                 newCentroids[i] = calloc(d, sizeof(double));
-                if (newCentroids[i] == NULL) {
-                    return NULL;
-                }
+                if (newCentroids[i] == NULL) { return NULL; }
             }
         } else {
             temp = centroids;
@@ -167,25 +142,16 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
                           &Pyobservations, &K_initial_index)) {
         return NULL;
     }
-
     observations = malloc(N * sizeof(double *));
-    if (observations == NULL) {
-        Py_RETURN_NONE;
-    }
+    if (observations == NULL) { Py_RETURN_NONE; }
     centroids = malloc(K * sizeof(double *));
-    if (centroids == NULL) {
-        Py_RETURN_NONE;
-    }
+    if (centroids == NULL) { Py_RETURN_NONE; }
     clusterAllocations = malloc(N * sizeof(int));
-    if (clusterAllocations == NULL) {
-        Py_RETURN_NONE;
-    }
+    if (clusterAllocations == NULL) { Py_RETURN_NONE; }
     for (i = 0;
          i < N; i++) { /* Taking the observations from Python to C list */
         observations[i] = malloc(d * sizeof(double));
-        if (observations[i] == NULL) {
-            Py_RETURN_NONE;
-        }
+        if (observations[i] == NULL) { Py_RETURN_NONE; }
         item = PyList_GetItem(Pyobservations, i);
         for (j = 0; j < d; j++) {
             observations[i][j] = PyFloat_AsDouble(PyList_GetItem(item, j));
@@ -199,10 +165,7 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
     /* Call approximation_loop and return the centroids */
     result = approximation_loop(observations, centroids, &clusterAllocations, N,
                                 K, d, MAX_ITER);
-    if (result == NULL) {
-        Py_RETURN_NONE;
-    }
-
+    if (result == NULL) { Py_RETURN_NONE; }
     /* Create python list of locations */
     PyLocations = PyList_New(0);
     for (i = 0; i < N; i++) {
@@ -220,16 +183,16 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
         free(result[i]);
     }
     free(result);
-
     return Py_BuildValue("O", PyLocations);
 }
 
 /* The C-API function that will be available to the API */
 static PyMethodDef capiMethods[] = {
         {"calc_centroids", (PyCFunction) calc_centroids_capi, METH_VARARGS,
-        PyDoc_STR("Kmeans Algorithem get the params and the k_initials"
-                  "and calc the centroids")},
-        {NULL, NULL, 0, NULL}
+                                                                 PyDoc_STR(
+                                                                         "Kmeans Algorithem get the params and the k_initials"
+                                                                         "and calc the centroids")},
+        {NULL,             NULL,                              0, NULL}
 };
 
 /* The C-API module */

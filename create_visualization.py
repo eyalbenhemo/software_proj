@@ -4,7 +4,6 @@ from matplotlib import pyplot as plt
 
 def jaccard(blobs, locations):
     n = len(blobs)
-    locations = np.array(locations)
     mat_locs = np.fromfunction(lambda i, j: locations[i] == locations[j],
                                (n, n), dtype=int)
     mat_blobs = np.fromfunction(lambda i, j: blobs[i] == blobs[j], (n, n),
@@ -26,7 +25,7 @@ def generate_info(data, spec_jaccard, kmeans_jaccard):
     return res
 
 
-def create(data, spec_locations, kmeans_locations, dim):
+def create_visualization_file(data, spec_locations, kmeans_locations, dim):
     if dim == 3:
         fig, (spectral, kmeans) = plt.subplots(1, 2,
                                                subplot_kw=dict(projection='3d'))
@@ -45,9 +44,5 @@ def create(data, spec_locations, kmeans_locations, dim):
     info = generate_info(data, spec_jaccard, kmeans_jaccard)
     fig.subplots_adjust(bottom=0.3)
     plt.figtext(x=0.5, y=0.01, s=info, ha="center", fontsize=12)
-    # plt.show()
     fig.savefig("clusters.pdf")
 
-
-def create_visualization_file(data, spec_locations, kmeans_locations):
-    create(data, spec_locations, kmeans_locations, len(data.data[0]))

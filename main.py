@@ -1,6 +1,7 @@
 import data_parser as data
 from normalized_specrtal import norm_spect_clustering
 from kmeans_pp import k_means_pp as kmeans
+import numpy as np
 import pandas as pd
 from create_visualization import create_visualization_file
 from time import time
@@ -30,8 +31,9 @@ if data.RANDOM:
 
 # Calling the k-mean algorithm
 # step 6
-spec_locations = kmeans(T, data.K, data.N, d_spect, data.MAX_ITER)
-kmeans_locations = kmeans(data.data, data.K, data.N, data.d, data.MAX_ITER)
+spec_locations = np.array(kmeans(T, data.K, data.N, d_spect, data.MAX_ITER))
+kmeans_locations = np.array(
+    kmeans(data.data, data.K, data.N, data.d, data.MAX_ITER))
 
 # Generate clusters.txt
 f = open("clusters.txt", 'w')
@@ -41,5 +43,5 @@ write_clusters(kmeans_locations, f, data.K)
 f.close()
 
 # Generate clusters.pdf
-create_visualization_file(data, spec_locations, kmeans_locations)
+create_visualization_file(data, spec_locations, kmeans_locations, data.N)
 print(str(time() - start))
