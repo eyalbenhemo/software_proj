@@ -23,7 +23,7 @@ def k_means_pp(mat, K, N, d, MAX_ITER):
                                    centroids)
     if locations is None:
         exit("Dynamic memory problem in the C code!")
-    return locations
+    return np.array(locations)
 
 
 # Calc the prob for every observation by it's distance from the closest centroid

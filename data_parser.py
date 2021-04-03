@@ -17,6 +17,12 @@ orijK = None
 
 
 def read_data():
+
+    print("The maximum capacity for 2-dimensional points is: N=" +
+          str(max_cap[2]['N']) + " and K=" + str(max_cap[2]['K']))
+    print("The maximum capacity for 3-dimensional points is: N=" +
+          str(max_cap[3]['N']) + " and K=" + str(max_cap[3]['K']))
+
     global K, N, d, MAX_ITER, data, RANDOM, blobs, orijK
     d = random(low=2, high=4)
     parser = argparse.ArgumentParser()
