@@ -27,10 +27,10 @@ def generate_info(data, spec_jaccard, kmeans_jaccard):
 
 def create_visualization_file(data, spec_locations, kmeans_locations, dim):
     if dim == 3:
-        fig, (spectral, kmeans) = plt.subplots(1, 2,
+        fig, (spectral, kmeans) = plt.subplots(1, 2, figsize=(7, 5.5),
                                                subplot_kw=dict(projection='3d'))
     else:
-        fig, (spectral, kmeans) = plt.subplots(1, 2)
+        fig, (spectral, kmeans) = plt.subplots(1, 2, figsize=(7, 5.5))
     cmap = plt.cm.jet
     x = data.data[:, 0]
     y = data.data[:, 1]
@@ -43,6 +43,5 @@ def create_visualization_file(data, spec_locations, kmeans_locations, dim):
     kmeans_jaccard = jaccard(data.blobs, kmeans_locations)
     info = generate_info(data, spec_jaccard, kmeans_jaccard)
     fig.subplots_adjust(bottom=0.3)
-    plt.figtext(x=0.5, y=0.01, s=info, ha="center", fontsize=12)
+    plt.figtext(x=0.5, y=0.05, s=info, ha="center", fontsize=12)
     fig.savefig("clusters.pdf")
-
