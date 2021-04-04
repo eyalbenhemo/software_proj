@@ -24,7 +24,6 @@ def read_data():
 
     global K, N, d, MAX_ITER, data, RANDOM, blobs, orijK
     d = random(low=2, high=4)
-    d = 2
     parser = argparse.ArgumentParser()
     parser.add_argument("K")
     parser.add_argument("N")
