@@ -45,7 +45,7 @@ def read_data():
         N = int(N)
         if orijK >= N:
             exit("K must be smaller than N")
-    data, blobs = make_blobs(n_samples=N, n_features=d, centers=K)
+    data, blobs = make_blobs(n_samples=N, n_features=d, centers=orijK)
 
     # generate data.txt
     data_out = pd.DataFrame(data)
