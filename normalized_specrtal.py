@@ -4,13 +4,13 @@ import eigengap_heuristic as eh
 
 
 # Calling all the steps in the algorithm
-def norm_spect_clustering(start):
+def norm_spect_clustering():
     mat = data.data
     N = data.N
     W = weighted_adjacency(N, mat)
     D = diagonal_mat_minus_sqrt(W)
     L = norm_laplacian(N, W, D)
-    U = eigengap_heuristic(L, start)
+    U = eigengap_heuristic(L)
     return matrix_T_normalize(U)
 
 
@@ -32,7 +32,7 @@ def norm_laplacian(N, W, D):
 
 
 # step 3 and 4
-def eigengap_heuristic(L, start):
+def eigengap_heuristic(L):
     Abar, Qbar = eh.QR_iter(L)
     data.K = eh.set_k(np.diag(Abar)) if data.RANDOM else data.orijK
     ind = np.argsort(np.diag(Abar))[0:data.K]

@@ -27,6 +27,7 @@ def main():
     # Init data and params
     data.read_data()
     # Execution of Normalized Spectral Clustering. step 1-5
+    T = norm_spect_clustering()
     # Calling the k-mean algorithm. step 6
     spec_locations = kmeans(T, data.K, data.N, data.K, data.MAX_ITER)
     kmeans_locations = kmeans(data.data, data.K, data.N, data.d, data.MAX_ITER)
