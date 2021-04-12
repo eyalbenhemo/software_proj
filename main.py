@@ -4,7 +4,9 @@ from kmeans_pp import k_means_pp as kmeans
 import pandas as pd
 from create_visualization import create_visualization_file
 import time
+
 start = time.time()
+
 
 def write_clusters(locations, f, K):
     clusters = pd.DataFrame(locations).groupby([0]).indices
