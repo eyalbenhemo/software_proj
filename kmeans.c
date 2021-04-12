@@ -11,7 +11,7 @@ static double **
 calc_centroids(double **observations, const int *clusterAllocations,
                double **new_centroids, int *clustersLengths, int N, int K,
                int d) {
-    int i, j; /* Looping variables */
+    int i, j;
     for (i = 0; i < K; i++) { /* Initialize clusters lengths and values to 0 */
         clustersLengths[i] = 0;
         for (j = 0; j < d; j++) {
@@ -23,7 +23,6 @@ calc_centroids(double **observations, const int *clusterAllocations,
         /* Update number of observations in vector */
         clustersLengths[clusterAllocations[i]]++;
         for (j = 0; j < d; j++) {
-            /* Add observation to vector */
             new_centroids[clusterAllocations[i]][j] += observations[i][j];
         }
     }
@@ -48,8 +47,8 @@ static double euclidian_distance(const double a[], const double b[], int d) {
     return dist;
 }
 
-/* Get pointer to observation and pointer to array of centroid and return the
- * index of closest centroid */
+/* Get pointer to observation and pointer to centroid and return the index of
+ * closest centroid */
 static int
 find_closest_centroid(const double a[], double **centroids, int K, int d) {
     double min_dist = -1;
@@ -66,7 +65,7 @@ find_closest_centroid(const double a[], double **centroids, int K, int d) {
     return min_cent;
 }
 
-/* Get 2 array of centroids and check if they equal */
+/* Get 2 centroids and check if they equal */
 static int
 check_if_equals(double **new_centroids, double **centroids, int K, int d) {
     int i, j;
@@ -80,21 +79,21 @@ check_if_equals(double **new_centroids, double **centroids, int K, int d) {
 
 /* Get centroids, MAX_ITER and observations
  * Calc centroids while num of iter <= MAX_ITER and last(centroids) != centroids
- * return centroids */
+ * return allocations */
 static double **
 approximation_loop(double **observations, double **centroids,
                    int **clusterAllocations_pointer, int N, int K, int d,
                    int MAX_ITER) {
     int i, j;
-    double **newCentroids; /* New centroids to be returned */
+    double **newCentroids;
     int *clusterAllocations = *clusterAllocations_pointer;
-    int *clustersLengths; /* Create array of how many observations go to each centroid */
-    double **temp; /* Swap variable */
+    int *clustersLengths;
+    double **temp;
     newCentroids = malloc(K * sizeof(double *));
     if (newCentroids == NULL) { return NULL; }
     clustersLengths = calloc(K, sizeof(int));
     if (clustersLengths == NULL) { return NULL; }
-    for (i = 0; i < K; i++) { /* Initialize clusters lengths and values to 0 */
+    for (i = 0; i < K; i++) {
         newCentroids[i] = calloc(d, sizeof(double));
         if (newCentroids[i] == NULL) { return NULL; }
     }
@@ -131,7 +130,7 @@ approximation_loop(double **observations, double **centroids,
 }
 
 /* C-API function: Parse the arguments from python,
- * Call the C function to execute Kmeans Algorithem */
+ * Call the C function to execute Kmeans algorithm */
 static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
     int K, N, d, MAX_ITER, i, j;
     double **observations, **centroids, **result;
@@ -172,7 +171,6 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
         PyList_Append(PyLocations, PyLong_FromLong(clusterAllocations[i]));
     }
 
-    /* Free allocation in C */
     free(clusterAllocations);
     for (i = 0; i < N; i++) {
         free(observations[i]);
@@ -189,18 +187,17 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
 /* The C-API function that will be available to the API */
 static PyMethodDef capiMethods[] = {
         {"calc_centroids", (PyCFunction) calc_centroids_capi, METH_VARARGS,
-                                                                 PyDoc_STR(
-                                                                         "Kmeans Algorithem get the params and the k_initials"
-                                                                         "and calc the centroids")},
-        {NULL,             NULL,                              0, NULL}
+         PyDoc_STR( "Kmeans Algorithem get the params and the k_initials "
+                    "and calc the centroids")},
+        {NULL, NULL, 0, NULL}
 };
 
 /* The C-API module */
 static struct PyModuleDef moduledef = {
         PyModuleDef_HEAD_INIT,
         "mykmeanssp", /* name of module */
-        NULL, /* Kmeans Algorithem */
-        -1,  /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
+        NULL, /* Kmeans Algorithm */
+        -1,
         capiMethods /* the PyMethodDef array from before containing the methods of the extension */
 };
 

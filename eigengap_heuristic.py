@@ -4,6 +4,7 @@ import data_parser as data
 epsilon = 0.0001
 
 
+# Thr modified gram schmidt algorithm
 def gram_schmidt(A, n):
     U = np.copy(A)
     R = np.zeros((n, n), dtype='float32')
@@ -11,12 +12,16 @@ def gram_schmidt(A, n):
     for i in range(n):
         R[i, i] = np.linalg.norm(U[:, i])
         if R[i, i] == 0:
-            # https://moodle.tau.ac.il/mod/forum/discuss.php?d=77599 this is
+            # https://moodle.tau.ac.il/mod/forum/discuss.php?d=77599 This is
             # really rear, thus we decided to exit with an appropriate error
             # message
             exit("R[" + str(i) + ", " + str(i) + "]== 0. Please try again.")
         Q[:, i] = U[:, i] / R[i, i]
-        # the j'th element in the i'th row in R from i'th element till the
+
+        # The code below is the inner loop in the algorithm, written with np
+        # methods instead of loops
+
+        # The j'th element in the i'th row in R from i'th element till the
         # end equal to the i'th column in Q multiple the j'th column in U
         R[i, i + 1:] = np.transpose(Q[:, i]) @ U[:, i + 1:]
         # Take the i'th column in Q and mul it with each scalar in the i'th
@@ -27,6 +32,7 @@ def gram_schmidt(A, n):
     return Q, R
 
 
+# The QR iteration algorithm
 def QR_iter(A):
     n = data.N
     Abar = np.copy(A)
@@ -42,6 +48,7 @@ def QR_iter(A):
     return Abar, Qbar
 
 
+# The heuristic of finding the k value
 def set_k(eigenvalues):
     eigenvalues = np.sort(eigenvalues)
     k = 0

@@ -2,6 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 
+# Calc the jaccard value
 def jaccard(blobs, locations):
     n = len(blobs)
     mat_locs = np.fromfunction(lambda i, j: locations[i] == locations[j],
@@ -15,6 +16,7 @@ def jaccard(blobs, locations):
     return 0 if denominator == 0 else numerator / denominator
 
 
+# The description in clusters.pdf
 def generate_info(data, spec_jaccard, kmeans_jaccard):
     res = "Data was generated from the values:\n" \
           "n = {} , k = {}\n" \
@@ -25,6 +27,7 @@ def generate_info(data, spec_jaccard, kmeans_jaccard):
     return res
 
 
+# Create the plots and save it to clusters.pdf
 def create_visualization_file(data, spec_locations, kmeans_locations, dim):
     if dim == 3:
         fig, (spectral, kmeans) = plt.subplots(1, 2, figsize=(7, 5.5),

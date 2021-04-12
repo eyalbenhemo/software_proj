@@ -16,6 +16,7 @@ blobs = None
 orijK = None
 
 
+# Read the args, save global variables and generate the data
 def read_data():
     print("The maximum capacity for 2-dimensional points is: N=" +
           str(max_cap[2]['N']) + " and K=" + str(max_cap[2]['K']))
@@ -45,34 +46,6 @@ def read_data():
         if orijK >= N:
             exit("K must be smaller than N")
     data, blobs = make_blobs(n_samples=N, n_features=d, centers=orijK)
-
-    # generate data.txt
-    data_out = pd.DataFrame(data)
-    data_out['new'] = blobs
-    data_out.to_csv('data.txt', index=False, header=False)
-    data = data.astype('float32')
-
-
-def read_data1():
-    print("The maximum capacity for 2-dimensional points is: N=" +
-          str(max_cap[2]['N']) + " and K=" + str(max_cap[2]['K']))
-    print("The maximum capacity for 3-dimensional points is: N=" +
-          str(max_cap[3]['N']) + " and K=" + str(max_cap[3]['K']))
-    import numpy as np
-    global K, N, d, MAX_ITER, data, RANDOM, blobs, orijK
-    parser = argparse.ArgumentParser()
-    temp, args = parser.parse_known_args()
-
-    filename = args[0]
-    RANDOM = (args[2] == 'True')
-    # Init data frame with the input file
-    data = pd.read_csv(filename, header=None)
-    data = pd.DataFrame.to_numpy(data)
-    N, d = data.shape
-    d -= 1
-    blobs = np.array(data[:, d], dtype=int)
-    data = data[:, 0:d]
-    orijK = len(np.unique(blobs)) if RANDOM else int(args[1])
 
     # generate data.txt
     data_out = pd.DataFrame(data)
