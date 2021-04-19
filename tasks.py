@@ -3,8 +3,10 @@ from invoke import task
 
 @task
 def build(c):
+    # Linux
     c.run("python3.8.5 setup.py build_ext --inplace")
-    # c.run("python setup.py build_ext --inplace") for windows
+    # Windows
+    # c.run("python setup.py build_ext --inplace")
 
 
 @task(aliases=["del"])
@@ -18,8 +20,12 @@ def delete(c):
 def run(c, k=None, n=None, Random=True):
     build(c)
     if Random:
+        # Linux
         c.run("python3.8.5 main.py 0 0 True")
-        # c.run("python main.py 0 0 True") for windows
+        # Windows
+        # c.run("python main.py 0 0 True")
     else:
+        # Linux
         c.run("python3.8.5 main.py {} {} 0".format(k, n))
-        # c.run("python main.py {} {} False".format(k, n)) for windows
+        # Windows
+        # c.run("python main.py {} {} False".format(k, n))

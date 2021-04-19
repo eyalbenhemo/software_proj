@@ -69,9 +69,12 @@ find_closest_centroid(const double a[], double **centroids, int K, int d) {
 static int
 check_if_equals(double **new_centroids, double **centroids, int K, int d) {
     int i, j;
+    double epsilon = 0.0001;
+    double diff;
     for (i = 0; i < K; i++) {
         for (j = 0; j < d; j++) {
-            if (centroids[i][j] != new_centroids[i][j]) { return 0; }
+            diff = centroids[i][j] - new_centroids[i][j];
+            if (!(-1 * epsilon <= diff && diff <= epsilon)) { return 0; }
         }
     }
     return 1;
@@ -187,8 +190,8 @@ static PyObject *calc_centroids_capi(PyObject *self, PyObject *args) {
 /* The C-API function that will be available to the API */
 static PyMethodDef capiMethods[] = {
         {"calc_centroids", (PyCFunction) calc_centroids_capi, METH_VARARGS,
-         PyDoc_STR( "Kmeans Algorithem get the params and the k_initials "
-                    "and calc the centroids")},
+                        PyDoc_STR("Kmeans Algorithem get the params and the k_initials and calc"
+                                  " the centroids")},
         {NULL, NULL, 0, NULL}
 };
 
