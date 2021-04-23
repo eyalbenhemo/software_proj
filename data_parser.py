@@ -3,8 +3,8 @@ import pandas as pd
 from numpy.random import randint as random
 from sklearn.datasets import make_blobs
 
-max_cap = {2: {'N': 450, 'K': 20},
-           3: {'N': 450, 'K': 20}}
+max_cap = {2: {'N': 460, 'K': 20},
+           3: {'N': 460, 'K': 20}}
 
 K = None
 N = None
