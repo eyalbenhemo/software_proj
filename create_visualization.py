@@ -21,8 +21,8 @@ def generate_info(data, spec_jaccard, kmeans_jaccard):
     res = "Data was generated from the values:\n" \
           "n = {} , k = {}\n" \
           "The k that was used for both algorithms was {}\n" \
-          "The Jaccard measure for Spectral Clustering: {}\n" \
-          "The Jaccard measure for K-means: {}" \
+          "The Jaccard measure for Spectral Clustering: {:.2f}\n" \
+          "The Jaccard measure for K-means: {:.2f}" \
         .format(data.N, data.orijK, data.K, spec_jaccard, kmeans_jaccard)
     return res
 
